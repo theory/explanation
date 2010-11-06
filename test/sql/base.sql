@@ -4,6 +4,7 @@ BEGIN;
 \i sql/explain-table.sql
 \set QUIET 0
 
+-- Need to mock md5() so that it emits known values, so the tests will pass.
 CREATE SCHEMA mock;
 
 CREATE TEMPORARY SEQUENCE md5seq;
@@ -37,11 +38,14 @@ $$;
 
 SET search_path = mock,public,pg_catalog;
 
+-- Okay, now on with the tests. Create a table to query against.
 CREATE TABLE foo(id int);
 
+-- Plan an explain and an explain analyze.
 SELECT * FROM plan('select * from foo');
 SELECT * FROM plan('select * from foo', true);
 
+-- Make sure parse_node() recurses.
 SELECT * FROM parse_node($$     <Plan>
        <Node-Type>Aggregate</Node-Type>
        <Strategy>Sorted</Strategy>
