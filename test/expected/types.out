@@ -1,0 +1,51 @@
+\set ECHO 0
+t|Node ID
+t|Parent ID
+t|Node Type
+t|Strategy
+t|Operation
+t|Startup Cost
+t|Total Cost
+t|Plan Rows
+t|Plan Width
+t|Actual Startup Time
+t|Actual Total Time
+t|Actual Rows
+t|Actual Loops
+t|Parent Relationship
+t|Sort Key
+t|Sort Method
+t|Sort Space Used
+t|Sort Space Type
+t|Join Type
+t|Join Filter
+t|Hash Cond
+t|Relation Name
+t|Alias
+t|Scan Direction
+t|Index Name
+t|Index Cond
+t|Recheck Cond
+t|TID Cond
+t|Merge Cond
+t|Subplan Name
+t|Function Name
+t|Function Call
+t|Filter
+t|One-Time Filter
+t|Command
+t|Shared Hit Blocks
+t|Shared Read Blocks
+t|Shared Written Blocks
+t|Local Hit Blocks
+t|Local Read Blocks
+t|Local Written Blocks
+t|Temp Read Blocks
+t|Temp Written Blocks
+t|Output
+t|Hash Buckets
+t|Hash Batches
+t|Original Hash Batches
+t|Peak Memory Usage
+t|Schema
+t|CTE Name

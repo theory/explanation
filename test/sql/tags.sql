@@ -20,6 +20,7 @@ SELECT "Parent Relationship"   FROM parse_node('<Plan><Parent-Relationship>Outer
 SELECT "Sort Key"              FROM parse_node('<Plan><Sort-Key><Item>d.id</Item><Item>d.name</Item></Sort-Key></Plan>');
 SELECT "Sort Method"           FROM parse_node('<Plan><Sort-Method><Item>this</Item><Item>that</Item></Sort-Method></Plan>');
 SELECT "Sort Space Type"       FROM parse_node('<Plan><Sort-Space-Type>whatever</Sort-Space-Type></Plan>');
+SELECT "Sort Space Used"       FROM parse_node('<Plan><Sort-Space-Used>32434</Sort-Space-Used></Plan>');
 SELECT "Join Type"             FROM parse_node('<Plan><Join-Type>nested</Join-Type></Plan>');
 SELECT "Join Filter"           FROM parse_node('<Plan><Join-Filter>pandering</Join-Filter></Plan>');
 SELECT "Hash Cond"             FROM parse_node('<Plan><Hash-Cond>(de.distribution = d.name)</Hash-Cond></Plan>');
