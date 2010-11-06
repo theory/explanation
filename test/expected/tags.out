@@ -1,0 +1,48 @@
+\set ECHO 0
+Aggregate
+Sorted
+foo
+258.13
+259.13
+1000
+33
+0.121
+0.134
+2000
+20
+Outer
+{d.id,d.name}
+{this,that}
+whatever
+nested
+pandering
+(de.distribution = d.name)
+users
+u
+forward
+idx_users
+(u.name = mumble)
+(u.id = fumble)
+(t.id = tid)
+(m.id = mid)
+my-subplan
+parse_node()
+parse_node(this, that)
+x = y
+one = two
+go!
+2000
+20
+0
+3453
+234
+12
+349394934934934
+2323
+{hi,you}
+42
+96
+2
+34234823482348
+public
+ralph
