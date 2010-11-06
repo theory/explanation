@@ -4,8 +4,11 @@ SET search_path = public;
 SET client_min_messages = warning;
 
 CREATE OR REPLACE FUNCTION parse_node(
-    node XML
+    node XML,
+    parent_id TEXT DEFAULT NULL
 ) RETURNS TABLE(
+    "Node ID"               TEXT,
+    "Parent ID"             TEXT,
     "Node Type"             TEXT,
     "Strategy"              TEXT,
     "Operation"             TEXT,
@@ -56,9 +59,12 @@ CREATE OR REPLACE FUNCTION parse_node(
     "CTE Name"              TEXT
 ) LANGUAGE plpgsql AS $$
 DECLARE
-    plans xml[] := xpath('/Plan/Plans/Plan', node);
+    plans   xml[] := xpath('/Plan/Plans/Plan', node);
+    node_id TEXT  := md5(pg_backend_pid()::text || clock_timestamp());
 BEGIN
     RETURN QUERY SELECT
+        node_id,
+        parent_id,
         (xpath('/Plan/Node-Type/text()', node))[1]::text,
         (xpath('/Plan/Strategy/text()', node))[1]::text,
         (xpath('/Plan/Operation/text()', node))[1]::text,
@@ -112,7 +118,7 @@ BEGIN
     -- Recurse.
     IF plans IS NOT NULL THEN
         FOR node IN SELECT unnest(plans) LOOP
-            RETURN QUERY SELECT * FROM parse_node(node);
+            RETURN QUERY SELECT * FROM parse_node(node, node_id);
         END LOOP;
     END IF;
 END;
@@ -122,6 +128,8 @@ CREATE OR REPLACE FUNCTION plan(
     q TEXT,
     a BOOLEAN DEFAULT FALSE
 ) RETURNS TABLE(
+    "Node ID"               TEXT,
+    "Parent ID"             TEXT,
     "Node Type"             TEXT,
     "Strategy"              TEXT,
     "Operation"             TEXT,

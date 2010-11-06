@@ -4,6 +4,39 @@ BEGIN;
 \i sql/explain-table.sql
 \set QUIET 0
 
+CREATE SCHEMA mock;
+
+CREATE TEMPORARY SEQUENCE md5seq;
+CREATE TEMPORARY TABLE md5s (
+    md5 TEXT,
+    id  INTEGER DEFAULT NEXTVAL('md5seq')
+);
+
+INSERT INTO md5s VALUES
+('6e9d7e0628d306480fece89e8483fe6e'),
+('b012abc1673778343cb1b89aae1e9b94'),
+('029dde3a3c872f0c960f03d2ecfaf5ee'),
+('3e4c4968cee7653037613c234a953be1'),
+('dd3d1b1fb6c70be827075e01b306250c'),
+('037a8fe70739ed1be6a3006d0ab80c82'),
+('2c4e922dc19ce9f01a3bf08fbd76b041'),
+('709b2febd8e560dd8830f4c7277c3758'),
+('9dd89be09ea07a1000a21cbfc09121c7'),
+('8dc3d35ab978f6c6e46f7927e7b86d21'),
+('3d7c72f13ae7571da70f434b5bc9e0af');
+
+CREATE FUNCTION mock.md5(TEXT) RETURNS TEXT LANGUAGE plpgsql AS $$
+DECLARE
+    rec md5s;
+BEGIN
+    SELECT * INTO rec FROM md5s WHERE id = (SELECT MIN(id) FROM md5s);
+     DELETE FROM md5s WHERE id = rec.id;
+     RETURN rec.md5;
+END;
+$$;
+
+SET search_path = mock,public,pg_catalog;
+
 CREATE TABLE foo(id int);
 
 SELECT * FROM plan('select * from foo');
