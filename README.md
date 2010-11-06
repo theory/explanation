@@ -94,6 +94,7 @@ statement, which you can use to actually insert values:
         "Node ID"               TEXT PRIMARY KEY,
         "Parent ID"             TEXT REFERENCES plans("Node ID"),
         "Node Type"             TEXT NOT NULL,
+        "Total Cost"            FLOAT,
         "Strategy"              TEXT,
         "Operation"             TEXT,
         "Startup Cost"          FLOAT,

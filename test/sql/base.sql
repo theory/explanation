@@ -43,7 +43,9 @@ CREATE TABLE foo(id int);
 
 -- Plan an explain and an explain analyze.
 SELECT * FROM plan('select * from foo');
-SELECT * FROM plan('select * from foo', true);
+
+-- Plan an explain analyze. Omit imes because it varies. :-(
+SELECT "Node ID", "Parent ID", "Node Type", "Total Runtime" IS NOT NULL as "Have Total Runtime", "Strategy", "Operation", "Startup Cost", "Total Cost", "Plan Rows", "Plan Width", "Actual Startup Time" IS NOT NULL AS "Have Actual Startup Time", "Actual Total Time" IS NOT NULL AS "Have Actual Total Time", "Actual Rows", "Actual Loops", "Parent Relationship", "Sort Key", "Sort Method", "Sort Space Used", "Sort Space Type", "Join Type", "Join Filter", "Hash Cond", "Relation Name", "Alias", "Scan Direction", "Index Name", "Index Cond", "Recheck Cond", "TID Cond", "Merge Cond", "Subplan Name", "Function Name", "Function Call", "Filter", "One-Time Filter", "Command", "Shared Hit Blocks", "Shared Read Blocks", "Shared Written Blocks", "Local Hit Blocks", "Local Read Blocks", "Local Written Blocks", "Temp Read Blocks", "Temp Written Blocks", "Output", "Hash Buckets", "Hash Batches", "Original Hash Batches", "Peak Memory Usage", "Schema", "CTE Name" FROM plan('select * from foo', true);
 
 -- Make sure parse_node() recurses.
 SELECT * FROM parse_node($$     <Plan>

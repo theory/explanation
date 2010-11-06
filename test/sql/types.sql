@@ -8,6 +8,7 @@ BEGIN;
 SELECT pg_typeof("Node ID")               = 'text'::regtype, 'Node ID'                 FROM parse_node('<Plan><Node-Type>Aggregate</Node-Type></Plan>');
 SELECT pg_typeof("Parent ID")             = 'text'::regtype, 'Parent ID'               FROM parse_node('<Plan><Node-Type>Aggregate</Node-Type></Plan>');
 SELECT pg_typeof("Node Type")             = 'text'::regtype, 'Node Type'               FROM parse_node('<Plan><Node-Type>Aggregate</Node-Type></Plan>');
+SELECT pg_typeof("Total Runtime")         = 'float'::regtype, 'Total Runtime'          FROM parse_node('<Plan><Node-Type>Aggregate</Node-Type></Plan>', NULL, 12.2);
 SELECT pg_typeof("Strategy")              = 'text'::regtype, 'Strategy'                FROM parse_node('<Plan><Strategy>Sorted</Strategy></Plan>');
 SELECT pg_typeof("Operation")             = 'text'::regtype, 'Operation'               FROM parse_node('<Plan><Operation>foo</Operation></Plan>');
 SELECT pg_typeof("Startup Cost")          = 'float'::regtype, 'Startup Cost'           FROM parse_node('<Plan><Startup-Cost>258.13</Startup-Cost></Plan>');

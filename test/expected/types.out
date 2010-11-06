@@ -2,6 +2,7 @@
 t|Node ID
 t|Parent ID
 t|Node Type
+t|Total Runtime
 t|Strategy
 t|Operation
 t|Startup Cost

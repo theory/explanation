@@ -5,11 +5,13 @@ SET client_min_messages = warning;
 
 CREATE OR REPLACE FUNCTION parse_node(
     node XML,
-    parent_id TEXT DEFAULT NULL
+    parent_id TEXT DEFAULT NULL,
+    runtime   FLOAT DEFAULT NULL
 ) RETURNS TABLE(
     "Node ID"               TEXT,
     "Parent ID"             TEXT,
     "Node Type"             TEXT,
+    "Total Runtime"         FLOAT,
     "Strategy"              TEXT,
     "Operation"             TEXT,
     "Startup Cost"          FLOAT,
@@ -66,6 +68,7 @@ BEGIN
         node_id,
         parent_id,
         (xpath('/Plan/Node-Type/text()', node))[1]::text,
+        runtime,
         (xpath('/Plan/Strategy/text()', node))[1]::text,
         (xpath('/Plan/Operation/text()', node))[1]::text,
         (xpath('/Plan/Startup-Cost/text()', node))[1]::text::FLOAT,
@@ -131,6 +134,7 @@ CREATE OR REPLACE FUNCTION plan(
     "Node ID"               TEXT,
     "Parent ID"             TEXT,
     "Node Type"             TEXT,
+    "Total Runtime"         FLOAT,
     "Strategy"              TEXT,
     "Operation"             TEXT,
     "Startup Cost"          FLOAT,
@@ -180,18 +184,19 @@ CREATE OR REPLACE FUNCTION plan(
     "CTE Name"              TEXT
 ) LANGUAGE plpgsql AS $$
 DECLARE
-    plan xml;
-    node xml;
+    plan  xml;
+    node  xml;
+    xmlns text[] := ARRAY[ARRAY['e', 'http://www.postgresql.org/2009/explain']];
 BEGIN
     -- Get the plan.
     EXECUTE 'EXPLAIN (format xml'
          || CASE WHEN a THEN ', analyze true' ELSE '' END
          || ') ' || q INTO plan;
 
-    RETURN QUERY SELECT * FROM parse_node((xpath(
-        '/e:explain/e:Query/e:Plan',
-        plan,
-        ARRAY[ARRAY['e', 'http://www.postgresql.org/2009/explain']]
-    ))[1]);
+    RETURN QUERY SELECT * FROM parse_node(
+        (xpath('/e:explain/e:Query/e:Plan', plan, xmlns))[1],
+        NULL,
+        (xpath('/e:explain/e:Query/e:Total-Runtime/text()', plan, xmlns))[1]::text::float
+    );
 END;
 $$;

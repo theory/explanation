@@ -40,6 +40,7 @@ CREATE TEMPORARY TABLE plans (
     "Node ID"               TEXT PRIMARY KEY,
     "Parent ID"             TEXT REFERENCES plans("Node ID"),
     "Node Type"             TEXT NOT NULL,
+    "Total Runtime"         FLOAT,
     "Strategy"              TEXT,
     "Operation"             TEXT,
     "Startup Cost"          FLOAT,
@@ -239,7 +240,7 @@ SELECT * FROM parse_node($$     <Plan>
          </Plan>
        </Plans>
      </Plan>
-$$);
+$$, NULL, 14.35);
 
 SELECT * FROM plans;
 
