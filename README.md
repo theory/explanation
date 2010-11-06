@@ -18,7 +18,7 @@ Plan a simple query:
                true
            );
 
-Outputs:
+Output:
 
      Node Type  │ Strategy │ Actual Startup Time │ Actual Total Time 
     ────────────┼──────────┼─────────────────────┼───────────────────
@@ -76,12 +76,104 @@ Usage
 -----
 
 To use the `plan()` function, simply pass a string you'd like to have
-`EXPLAIN`ed. If you'd like the output of `EXPLAIN ANALYZE`, pass `true` as the
-second argument. The function returns a relation with each node of the plan as
-a single row. The first row will be the outermost node, and any other rows
-represent the child nodes. The structure of the relation is the same as this
-`CREATE TABLE` statement, which you can use to actually insert values:
+`EXPLAIN`ed:
 
+    SELECT * FROM plan(:query);
+
+If you'd like the output of `EXPLAIN ANALYZE`, pass `true` as the
+second argument.
+
+    SELECT * FROM plan(:query, true);
+
+The function returns a relation with each node of the plan as a single row.
+The first row will be the outermost node, and any other rows represent the
+child nodes. The structure of the relation is the same as this `CREATE TABLE`
+statement, which you can use to actually insert values:
+
+    CREATE TEMPORARY TABLE plans (
+        "Node ID"               TEXT PRIMARY KEY,
+        "Parent ID"             TEXT REFERENCES plans("Node ID"),
+        "Node Type"             TEXT NOT NULL,
+        "Strategy"              TEXT,
+        "Operation"             TEXT,
+        "Startup Cost"          FLOAT,
+        "Total Cost"            FLOAT,
+        "Plan Rows"             FLOAT,
+        "Plan Width"            INTEGER,
+        "Actual Startup Time"   FLOAT,
+        "Actual Total Time"     FLOAT,
+        "Actual Rows"           FLOAT,
+        "Actual Loops"          FLOAT,
+        "Parent Relationship"   TEXT,
+        "Sort Key"              TEXT[],
+        "Sort Method"           TEXT[],
+        "Sort Space Used"       BIGINT,
+        "Sort Space Type"       TEXT,
+        "Join Type"             TEXT,
+        "Join Filter"           TEXT,
+        "Hash Cond"             TEXT,
+        "Relation Name"         TEXT,
+        "Alias"                 TEXT,
+        "Scan Direction"        TEXT,
+        "Index Name"            TEXT,
+        "Index Cond"            TEXT,
+        "Recheck Cond"          TEXT,
+        "TID Cond"              TEXT,
+        "Merge Cond"            TEXT,
+        "Subplan Name"          TEXT,
+        "Function Name"         TEXT,
+        "Function Call"         TEXT,
+        "Filter"                TEXT,
+        "One-Time Filter"       TEXT,
+        "Command"               TEXT,
+        "Shared Hit Blocks"     BIGINT,
+        "Shared Read Blocks"    BIGINT,
+        "Shared Written Blocks" BIGINT,
+        "Local Hit Blocks"      BIGINT,
+        "Local Read Blocks"     BIGINT,
+        "Local Written Blocks"  BIGINT,
+        "Temp Read Blocks"      BIGINT,
+        "Temp Written Blocks"   BIGINT,
+        "Output"                TEXT[],
+        "Hash Buckets"          BIGINT,
+        "Hash Batches"          BIGINT,
+        "Original Hash Batches" BIGINT,
+        "Peak Memory Usage"     BIGINT,
+        "Schema"                TEXT,
+        "CTE Name"              TEXT
+    );
+
+The `"Node ID"` column contains an MD5 hash created just before a node is
+parsed, from the concatenation of the server PID and the current time:
+
+    md5( pg_backend_pid() || clock_timestamp() )
+
+As such it should be adequately unique on a single server. The `"Parent ID"`
+will be `NULL` for the outer plan. For example, here's the output of the first
+three columns of a query with nine plan nodes:
+
+                Node ID              │            Parent ID             │   Node Type
+    ─────────────────────────────────┼──────────────────────────────────┼────────────────
+    029dde3a3c872f0c960f03d2ecfaf5ee |                                  | Aggregate
+    3e4c4968cee7653037613c234a953be1 | 029dde3a3c872f0c960f03d2ecfaf5ee | Sort
+    dd3d1b1fb6c70be827075e01b306250c | 3e4c4968cee7653037613c234a953be1 | Nested Loop
+    037a8fe70739ed1be6a3006d0ab80c82 | dd3d1b1fb6c70be827075e01b306250c | Hash Join
+    2c4e922dc19ce9f01a3bf08fbd76b041 | 037a8fe70739ed1be6a3006d0ab80c82 | Seq Scan
+    709b2febd8e560dd8830f4c7277c3758 | 037a8fe70739ed1be6a3006d0ab80c82 | Hash
+    9dd89be09ea07a1000a21cbfc09121c7 | 709b2febd8e560dd8830f4c7277c3758 | Seq Scan
+    8dc3d35ab978f6c6e46f7927e7b86d21 | dd3d1b1fb6c70be827075e01b306250c | Index Scan
+    3d7c72f13ae7571da70f434b5bc9e0af | 029dde3a3c872f0c960f03d2ecfaf5ee | Function Scan
+    
+
+All other columns are derived directly from the XML output of `EXPLAIN`.
+Please see ["Using
+EXPLAIN"](http://www.postgresql.org/docs/current/static/using-explain.html)
+for further reading on using `EXPLAIN`.
+
+Examples
+--------
+
+TBD.
 
 Dependencies
 ------------
