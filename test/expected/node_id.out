@@ -1,0 +1,6 @@
+\set ECHO 0
+ Node ID is PID || clock timestamp 
+-----------------------------------
+ t
+(1 row)
+
