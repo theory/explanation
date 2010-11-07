@@ -4,9 +4,10 @@ SET search_path = public;
 SET client_min_messages = warning;
 
 CREATE OR REPLACE FUNCTION parse_node(
-    node XML,
-    parent_id TEXT DEFAULT NULL,
-    runtime   FLOAT DEFAULT NULL
+    node       XML,
+    parent_id  TEXT DEFAULT NULL,
+    runtime    FLOAT DEFAULT NULL,
+    trig_count INTEGER DEFAULT NULL
 ) RETURNS TABLE(
     "Node ID"               TEXT,
     "Parent ID"             TEXT,
@@ -58,7 +59,8 @@ CREATE OR REPLACE FUNCTION parse_node(
     "Original Hash Batches" BIGINT,
     "Peak Memory Usage"     BIGINT,
     "Schema"                TEXT,
-    "CTE Name"              TEXT
+    "CTE Name"              TEXT,       
+    "Trigger Count"         INTEGER
 ) LANGUAGE plpgsql AS $$
 DECLARE
     plans   xml[] := xpath('/Plan/Plans/Plan', node);
@@ -115,7 +117,8 @@ BEGIN
         (xpath('/Plan/Original-Hash-Batches/text()', node))[1]::text::bigint,
         (xpath('/Plan/Peak-Memory-Usage/text()', node))[1]::text::bigint,
         (xpath('/Plan/Schema/text()', node))[1]::text,
-        (xpath('/Plan/CTE-Name/text()', node))[1]::text
+        (xpath('/Plan/CTE-Name/text()', node))[1]::text,
+        trig_count
     ;
 
     -- Recurse.
@@ -181,7 +184,8 @@ CREATE OR REPLACE FUNCTION plan(
     "Original Hash Batches" BIGINT,
     "Peak Memory Usage"     BIGINT,
     "Schema"                TEXT,
-    "CTE Name"              TEXT
+    "CTE Name"              TEXT,
+    "Trigger Count"         INTEGER
 ) LANGUAGE plpgsql AS $$
 DECLARE
     plan  xml;
@@ -196,7 +200,8 @@ BEGIN
     RETURN QUERY SELECT * FROM parse_node(
         (xpath('/e:explain/e:Query/e:Plan', plan, xmlns))[1],
         NULL,
-        (xpath('/e:explain/e:Query/e:Total-Runtime/text()', plan, xmlns))[1]::text::float
+        (xpath('/e:explain/e:Query/e:Total-Runtime/text()', plan, xmlns))[1]::text::float,
+        (xpath('count(/e:explain/e:Query/e:Triggers/e:Trigger)', plan, xmlns))[1]::text::integer
     );
 END;
 $$;

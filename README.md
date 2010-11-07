@@ -141,30 +141,38 @@ statement, which you can use to actually insert values:
         "Original Hash Batches" BIGINT,
         "Peak Memory Usage"     BIGINT,
         "Schema"                TEXT,
-        "CTE Name"              TEXT
+        "CTE Name"              TEXT,
+        "Trigger Count"         INTEGER
     );
 
-The `"Node ID"` column contains an MD5 hash created just before a node is
-parsed, from the concatenation of the server PID and the current time:
+Some notes on the columns:
 
-    md5( pg_backend_pid() || clock_timestamp() )
+* The `"Node ID"` column contains an MD5 hash created just before a node is
+  parsed, from the concatenation of the server PID and the current time:
 
-As such it should be adequately unique on a single server. The `"Parent ID"`
-will be `NULL` for the outer plan. For example, here's the output of the first
-three columns of a query with nine plan nodes:
+      md5( pg_backend_pid() || clock_timestamp() )
 
-                Node ID              │            Parent ID             │   Node Type
-    ─────────────────────────────────┼──────────────────────────────────┼────────────────
-    029dde3a3c872f0c960f03d2ecfaf5ee |                                  | Aggregate
-    3e4c4968cee7653037613c234a953be1 | 029dde3a3c872f0c960f03d2ecfaf5ee | Sort
-    dd3d1b1fb6c70be827075e01b306250c | 3e4c4968cee7653037613c234a953be1 | Nested Loop
-    037a8fe70739ed1be6a3006d0ab80c82 | dd3d1b1fb6c70be827075e01b306250c | Hash Join
-    2c4e922dc19ce9f01a3bf08fbd76b041 | 037a8fe70739ed1be6a3006d0ab80c82 | Seq Scan
-    709b2febd8e560dd8830f4c7277c3758 | 037a8fe70739ed1be6a3006d0ab80c82 | Hash
-    9dd89be09ea07a1000a21cbfc09121c7 | 709b2febd8e560dd8830f4c7277c3758 | Seq Scan
-    8dc3d35ab978f6c6e46f7927e7b86d21 | dd3d1b1fb6c70be827075e01b306250c | Index Scan
-    3d7c72f13ae7571da70f434b5bc9e0af | 029dde3a3c872f0c960f03d2ecfaf5ee | Function Scan
-    
+  As such it should be adequately unique on a single server. The `"Parent ID"`
+  will be `NULL` for the outer plan. For example, here's the output of the
+  first three columns of a query with nine plan nodes:
+
+                  Node ID              │            Parent ID             │   Node Type
+      ─────────────────────────────────┼──────────────────────────────────┼────────────────
+      029dde3a3c872f0c960f03d2ecfaf5ee |                                  | Aggregate
+      3e4c4968cee7653037613c234a953be1 | 029dde3a3c872f0c960f03d2ecfaf5ee | Sort
+      dd3d1b1fb6c70be827075e01b306250c | 3e4c4968cee7653037613c234a953be1 | Nested Loop
+      037a8fe70739ed1be6a3006d0ab80c82 | dd3d1b1fb6c70be827075e01b306250c | Hash Join
+      2c4e922dc19ce9f01a3bf08fbd76b041 | 037a8fe70739ed1be6a3006d0ab80c82 | Seq Scan
+      709b2febd8e560dd8830f4c7277c3758 | 037a8fe70739ed1be6a3006d0ab80c82 | Hash
+      9dd89be09ea07a1000a21cbfc09121c7 | 709b2febd8e560dd8830f4c7277c3758 | Seq Scan
+      8dc3d35ab978f6c6e46f7927e7b86d21 | dd3d1b1fb6c70be827075e01b306250c | Index Scan
+      3d7c72f13ae7571da70f434b5bc9e0af | 029dde3a3c872f0c960f03d2ecfaf5ee | Function Scan
+
+* The `"Total Runtime"` column applies only to the outer-most plan, and sums
+  the runtime of the entire query.
+
+* The `"Trigger Count"` column also applies only to the outer-most plan, and
+  simply provides a count of the number of triggers that were called.
 
 All other columns are derived directly from the XML output of `EXPLAIN`.
 Please see ["Using

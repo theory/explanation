@@ -87,7 +87,8 @@ CREATE TEMPORARY TABLE plans (
     "Original Hash Batches" BIGINT,
     "Peak Memory Usage"     BIGINT,
     "Schema"                TEXT,
-    "CTE Name"              TEXT
+    "CTE Name"              TEXT,
+    "Trigger Count"         INTEGER
 );
 
 INSERT INTO plans
@@ -240,7 +241,7 @@ SELECT * FROM parse_node($$     <Plan>
          </Plan>
        </Plans>
      </Plan>
-$$, NULL, 14.35);
+$$, NULL, 14.35, 3);
 
 SELECT * FROM plans;
 
