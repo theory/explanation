@@ -206,4 +206,24 @@ SELECT * FROM parse_node($$     <Plan>
        </Plans>
      </Plan>
 $$);
+
+-- Make sure parse_trigger() works.
+SELECT * FROM parse_triggers(ARRAY[
+    $$    <Trigger>
+      <Trigger-Name>Harry</Trigger-Name>
+      <Constraint-Name>Melissa</Constraint-Name>
+      <Relation>users</Relation>
+      <Time>0.234</Time>
+      <Calls>14</Calls>
+    </Trigger>$$,
+    $$    <Trigger>
+      <Trigger-Name>Josh</Trigger-Name>
+      <Constraint-Name>Jeff</Constraint-Name>
+      <Relation>wankers</Relation>
+      <Time>0.345</Time>
+      <Calls>2</Calls>
+    </Trigger>$$
+]::xml[]);
+
 ROLLBACK;
+

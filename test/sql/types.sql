@@ -58,6 +58,6 @@ SELECT pg_typeof("Original Hash Batches") = 'bigint'::regtype,  'Original Hash B
 SELECT pg_typeof("Peak Memory Usage")     = 'bigint'::regtype,  'Peak Memory Usage'     FROM parse_node('<Plan><Peak-Memory-Usage>34234823482348</Peak-Memory-Usage></Plan>');
 SELECT pg_typeof("Schema")                = 'text'::regtype,    'Schema'                FROM parse_node('<Plan><Schema>public</Schema></Plan>');
 SELECT pg_typeof("CTE Name")              = 'text'::regtype,    'CTE Name'              FROM parse_node('<Plan><CTE-Name>ralph</CTE-Name></Plan>');
-SELECT pg_typeof("Triggers")              = 'text[]'::regtype,  'Triggers'              FROM parse_node('<Plan><CTE-Name>ralph</CTE-Name></Plan>', NULL, NULL, '{foo}');
+SELECT pg_typeof("Triggers")              = 'trigger_plan[]'::regtype, 'Triggers'         FROM parse_node('<Plan><CTE-Name>ralph</CTE-Name></Plan>', NULL, NULL, ARRAY[ROW('Harry', 'Melissa', 'users', '00:00:00.000234', 14)::trigger_plan]);
 
 ROLLBACK;

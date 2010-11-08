@@ -22,4 +22,10 @@
  3d7c72f13ae7571da70f434b5bc9e0af | 029dde3a3c872f0c960f03d2ecfaf5ee | Function Scan |               |          |           |            0 |          1 |       100 |         32 | 00:00:00            | 00:00:00          |           0 |            0 | SubPlan             | {}                                                                            | {}          |                 |                 |           |                                              |                            |                         | g     |                |                        |                            |              |          |            | SubPlan 1    | unnest        |               | (x IS NOT NULL) |                 |         |                   |                    |                       |                  |                   |                      |                  |                     | {}     |              |              |                       |                   |        |          | 
 (9 rows)
 
+ Name  | Constraint | Relation |      Time       | Calls 
+-------+------------+----------+-----------------+-------
+ Harry | Melissa    | users    | 00:00:00.000234 |    14
+ Josh  | Jeff       | wankers  | 00:00:00.000345 |     2
+(2 rows)
+
 ROLLBACK

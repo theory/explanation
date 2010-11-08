@@ -89,7 +89,7 @@ CREATE TEMPORARY TABLE plans (
     "Peak Memory Usage"     BIGINT,
     "Schema"                TEXT,
     "CTE Name"              TEXT,
-    "Triggers"              TEXT[]
+    "Triggers"              trigger_plan[]
 );
 
 INSERT INTO plans
@@ -242,7 +242,7 @@ SELECT * FROM parse_node($$     <Plan>
          </Plan>
        </Plans>
      </Plan>
-$$, NULL, '14.35 ms', '{foo,bar}');
+$$, NULL, '14.35 ms', ARRAY[ROW('Harry', 'Melissa', 'users', '00:00:00.000234', 14)::trigger_plan]);
 
 SELECT * FROM plans;
 

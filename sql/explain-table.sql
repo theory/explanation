@@ -3,11 +3,38 @@ SET search_path = public;
 
 SET client_min_messages = warning;
 
+CREATE TYPE trigger_plan AS (
+    "Name"       TEXT,
+    "Constraint" TEXT,
+    "Relation"   TEXT,
+    "Time"       INTERVAL,
+    "Calls"      FLOAT
+);
+
+CREATE OR REPLACE FUNCTION parse_triggers(
+    triggers  XML[]
+) RETURNS SETOF trigger_plan LANGUAGE plpgsql AS $$
+DECLARE
+    trig xml;
+BEGIN
+    IF triggers IS NOT NULL THEN
+        FOR trig IN SELECT unnest(triggers) LOOP
+            RETURN QUERY SELECT
+                (xpath('/Trigger/Trigger-Name/text()', trig))[1]::text,
+                (xpath('/Trigger/Constraint-Name/text()', trig))[1]::text,
+                (xpath('/Trigger/Relation/text()', trig))[1]::text,
+                ((xpath('/Trigger/Time/text()', trig))[1]::text || ' ms')::interval,
+                (xpath('/Trigger/Calls/text()', trig))[1]::text::float;
+        END LOOP;
+    END IF;
+END;
+$$;
+
 CREATE OR REPLACE FUNCTION parse_node(
     node       XML,
     parent_id  TEXT DEFAULT NULL,
     runtime    INTERVAL DEFAULT NULL,
-    trigs      TEXT[] DEFAULT NULL
+    trigs      trigger_plan[] DEFAULT NULL
 ) RETURNS TABLE(
     "Node ID"               TEXT,
     "Parent ID"             TEXT,
@@ -60,7 +87,7 @@ CREATE OR REPLACE FUNCTION parse_node(
     "Peak Memory Usage"     BIGINT,
     "Schema"                TEXT,
     "CTE Name"              TEXT,       
-    "Triggers"              TEXT[]
+    "Triggers"              trigger_plan[]
 ) LANGUAGE plpgsql AS $$
 DECLARE
     plans   xml[] := xpath('/Plan/Plans/Plan', node);
@@ -186,7 +213,7 @@ CREATE OR REPLACE FUNCTION plan(
     "Peak Memory Usage"     BIGINT,
     "Schema"                TEXT,
     "CTE Name"              TEXT,
-    "Triggers"              TEXT[]
+    "Triggers"              trigger_plan[]
 ) LANGUAGE plpgsql AS $$
 DECLARE
     plan  xml;
@@ -202,7 +229,7 @@ BEGIN
         (xpath('/e:explain/e:Query/e:Plan', plan, xmlns))[1],
         NULL,
         ((xpath('/e:explain/e:Query/e:Total-Runtime/text()', plan, xmlns))[1]::text || ' ms')::interval,
-        xpath('/e:explain/e:Query/e:Triggers/e:Trigger/e:Trigger-Name', plan, xmlns)::text[]
+        ARRAY(SELECT p FROM parse_triggers(xpath('/e:explain/e:Query/e:Triggers/e:Trigger', plan, xmlns)) AS p)
     );
 END;
 $$;
