@@ -1,54 +1,54 @@
 \set ECHO 0
-t|Timestamp
-t|Node ID
-t|Parent ID
-t|Node Type
-t|Total Runtime
-t|Strategy
-t|Operation
-t|Startup Cost
-t|Total Cost
-t|Plan Rows
-t|Plan Width
-t|Actual Startup Time
-t|Actual Total Time
-t|Actual Rows
-t|Actual Loops
-t|Parent Relationship
-t|Sort Key
-t|Sort Method
-t|Sort Space Used
-t|Sort Space Type
-t|Join Type
-t|Join Filter
-t|Hash Cond
-t|Relation Name
-t|Alias
-t|Scan Direction
-t|Index Name
-t|Index Cond
-t|Recheck Cond
-t|TID Cond
-t|Merge Cond
-t|Subplan Name
-t|Function Name
-t|Function Call
-t|Filter
-t|One-Time Filter
-t|Command
-t|Shared Hit Blocks
-t|Shared Read Blocks
-t|Shared Written Blocks
-t|Local Hit Blocks
-t|Local Read Blocks
-t|Local Written Blocks
-t|Temp Read Blocks
-t|Temp Written Blocks
-t|Output
-t|Hash Buckets
-t|Hash Batches
-t|Original Hash Batches
-t|Peak Memory Usage
-t|Schema
-t|CTE Name
-t|Triggers
+t|planned_at
+t|node_id
+t|parent_id
+t|node_type
+t|total_runtime
+t|strategy
+t|operation
+t|startup_cost
+t|total_cost
+t|plan_rows
+t|plan_width
+t|actual_startup_time
+t|actual_total_time
+t|actual_rows
+t|actual_loops
+t|parent_relationship
+t|sort_key
+t|sort_method
+t|sort_space_used
+t|sort_space_type
+t|join_type
+t|join_filter
+t|hash_cond
+t|relation_name
+t|alias
+t|scan_direction
+t|index_name
+t|index_cond
+t|recheck_cond
+t|tid_cond
+t|merge_cond
+t|subplan_name
+t|function_name
+t|function_call
+t|filter
+t|one_time_filter
+t|command
+t|shared_hit_blocks
+t|shared_read_blocks
+t|shared_written_blocks
+t|local_hit_blocks
+t|local_read_blocks
+t|local_written_blocks
+t|temp_read_blocks
+t|temp_written_blocks
+t|output
+t|hash_buckets
+t|hash_batches
+t|original_hash_batches
+t|peak_memory_usage
+t|schema
+t|cte_name
+t|triggers

@@ -13,7 +13,7 @@ $$;
 SET search_path = mock,public,pg_catalog;
 
 -- Make sure the generated ID is what we think it should be.
-SELECT "Node ID" = md5(pg_backend_pid()::text || clock_timestamp())
+SELECT node_id = md5(pg_backend_pid()::text || clock_timestamp())
     AS "Node ID is PID || clock timestamp"
   FROM parse_node('<Plan><Node-Type>Aggregate</Node-Type></Plan>');
 

@@ -11,8 +11,7 @@ Synopsis
 
 Plan a simple query:
 
-    SELECT "Node Type", "Strategy",  "Actual Startup Time",
-           "Actual Total Time"
+    SELECT node_type, strategy, actual_startup_time, actual_total_time
       FROM plan(
                $$ SELECT * FROM pg_class WHERE relname = 'users' $$,
                true
@@ -20,7 +19,7 @@ Plan a simple query:
 
 Output:
 
-     Node Type  │ Strategy │ Actual Startup Time │ Actual Total Time 
+     node_type  │ strategy │ actual_startup_time │ actual_total_time 
     ────────────┼──────────┼─────────────────────┼───────────────────
      Index Scan │          │ 00:00:00.000017     │ 00:00:00.000017
     
@@ -91,77 +90,77 @@ child nodes. The structure of the relation is the same as this `CREATE TABLE`
 statement, which you can use to actually insert values:
 
     CREATE TEMPORARY TABLE plans (
-        "Timestamp"             TIMESTAMPTZ,
-        "Node ID"               TEXT PRIMARY KEY,
-        "Parent ID"             TEXT REFERENCES plans("Node ID"),
-        "Node Type"             TEXT NOT NULL,
-        "Total Runtime"         INTERVAL,
-        "Strategy"              TEXT,
-        "Operation"             TEXT,
-        "Startup Cost"          FLOAT,
-        "Total Cost"            FLOAT,
-        "Plan Rows"             FLOAT,
-        "Plan Width"            INTEGER,
-        "Actual Startup Time"   INTERVAL,
-        "Actual Total Time"     INTERVAL,
-        "Actual Rows"           FLOAT,
-        "Actual Loops"          FLOAT,
-        "Parent Relationship"   TEXT,
-        "Sort Key"              TEXT[],
-        "Sort Method"           TEXT[],
-        "Sort Space Used"       BIGINT,
-        "Sort Space Type"       TEXT,
-        "Join Type"             TEXT,
-        "Join Filter"           TEXT,
-        "Hash Cond"             TEXT,
-        "Relation Name"         TEXT,
-        "Alias"                 TEXT,
-        "Scan Direction"        TEXT,
-        "Index Name"            TEXT,
-        "Index Cond"            TEXT,
-        "Recheck Cond"          TEXT,
-        "TID Cond"              TEXT,
-        "Merge Cond"            TEXT,
-        "Subplan Name"          TEXT,
-        "Function Name"         TEXT,
-        "Function Call"         TEXT,
-        "Filter"                TEXT,
-        "One-Time Filter"       TEXT,
-        "Command"               TEXT,
-        "Shared Hit Blocks"     BIGINT,
-        "Shared Read Blocks"    BIGINT,
-        "Shared Written Blocks" BIGINT,
-        "Local Hit Blocks"      BIGINT,
-        "Local Read Blocks"     BIGINT,
-        "Local Written Blocks"  BIGINT,
-        "Temp Read Blocks"      BIGINT,
-        "Temp Written Blocks"   BIGINT,
-        "Output"                TEXT[],
-        "Hash Buckets"          BIGINT,
-        "Hash Batches"          BIGINT,
-        "Original Hash Batches" BIGINT,
-        "Peak Memory Usage"     BIGINT,
-        "Schema"                TEXT,
-        "CTE Name"              TEXT,       
-        "Triggers"              trigger_plan[]
+        timestamp               TIMESTAMPTZ,
+        node_id                 TEXT PRIMARY KEY,
+        parent_id               TEXT REFERENCES plans("Node ID"),
+        node_type               TEXT NOT NULL,
+        total_runtime           INTERVAL,
+        strategy                TEXT,
+        operation               TEXT,
+        startup_cost            FLOAT,
+        total_cost              FLOAT,
+        plan_rows               FLOAT,
+        plan_width              INTEGER,
+        actual_startup_time     INTERVAL,
+        actual_total_time       INTERVAL,
+        actual_rows             FLOAT,
+        actual_loops            FLOAT,
+        parent_relationship     TEXT,
+        sort_key                TEXT[],
+        sort_method             TEXT[],
+        sort_space_used         BIGINT,
+        sort_space_type         TEXT,
+        join_type               TEXT,
+        join_filter             TEXT,
+        hash_cond               TEXT,
+        relation_name           TEXT,
+        alias                   TEXT,
+        scan_direction          TEXT,
+        index_name              TEXT,
+        index_cond              TEXT,
+        recheck_cond            TEXT,
+        tid_cond                TEXT,
+        merge_cond              TEXT,
+        subplan_name            TEXT,
+        function_name           TEXT,
+        function_call           TEXT,
+        filter                  TEXT,
+        one_time_filter         TEXT,
+        command                 TEXT,
+        shared_hit_blocks       BIGINT,
+        shared_read_blocks      BIGINT,
+        shared_written_blocks   BIGINT,
+        local_hit_blocks        BIGINT,
+        local_read_blocks       BIGINT,
+        local_written_blocks    BIGINT,
+        temp_read_blocks        BIGINT,
+        temp_written_blocks     BIGINT,
+        output                  TEXT[],
+        hash_buckets            BIGINT,
+        hash_batches            BIGINT,
+        original_hash_batches   BIGINT,
+        peak_memory_usage       BIGINT,
+        schema                  TEXT,
+        cte_name                TEXT,       
+        triggers                trigger_plan[]
     );
 
 Some notes on the columns:
 
-* The `"Timestamp"` column is just `NOW()`. Convenient for when the output is
+* The `planned_at` column is just `NOW()`. Convenient for when the output is
   stored in a table and you'd like to refer back to earlier plans when
   comparing changes to queries over time.
 
-* The `"Node ID"` column contains an MD5 hash created just before a node is
+* The `node_id` column contains an MD5 hash created just before a node is
   parsed, from the concatenation of the server PID and the current time:
 
       md5( pg_backend_pid() || clock_timestamp() )
 
-  As such it should be adequately unique on a single server. The `"Parent ID"`
+  As such it should be adequately unique on a single server. The `parent_id`
   will be `NULL` for the outer plan. For example, here's the output of the
   first three columns of a query with nine plan nodes:
 
-                  Node ID              │            Parent ID             │   Node Type
+                  node_id              │            parent_id             │   node_type
       ─────────────────────────────────┼──────────────────────────────────┼────────────────
       029dde3a3c872f0c960f03d2ecfaf5ee |                                  | Aggregate
       3e4c4968cee7653037613c234a953be1 | 029dde3a3c872f0c960f03d2ecfaf5ee | Sort
@@ -173,18 +172,18 @@ Some notes on the columns:
       8dc3d35ab978f6c6e46f7927e7b86d21 | dd3d1b1fb6c70be827075e01b306250c | Index Scan
       3d7c72f13ae7571da70f434b5bc9e0af | 029dde3a3c872f0c960f03d2ecfaf5ee | Function Scan
 
-* The `"Total Runtime"` column applies only to the outer-most plan, and sums
-  the runtime of the entire query.
+* The `total_runtime` column applies only to the outer-most plan, and sums the
+  runtime of the entire query.
 
-* The `"Triggers"` column also applies only to the outer-most plan, and
-  provides an array of `trigger_plan` records for the that were called.
-  The columns of the composite `trigger_plan` type are:
+* The `triggers` column also applies only to the outer-most plan, and provides
+  an array of `trigger_plan` records for the that were called. The columns of
+  the composite `trigger_plan` type are:
 
-    + `"Name"`       TEXT
-    + `"Constraint"` TEXT
-    + `"Relation"`   TEXT
-    + `"Time"`       INTERVAL
-    + `"Calls"`      FLOAT
+    + `trigger_name`    TEXT
+    + `constraint_name` TEXT
+    + `relation`        TEXT
+    + `time`            INTERVAL
+    + `calls`           FLOAT
 
 All other columns are derived directly from the XML output of `EXPLAIN`.
 Please see ["Using
