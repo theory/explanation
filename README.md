@@ -22,7 +22,6 @@ Output:
      node_type  │ strategy │ actual_startup_time │ actual_total_time 
     ────────────┼──────────┼─────────────────────┼───────────────────
      Index Scan │          │ 00:00:00.000017     │ 00:00:00.000017
-    
 
 Installation
 ------------
@@ -92,7 +91,7 @@ statement, which you can use to actually insert values:
     CREATE TEMPORARY TABLE plans (
         timestamp               TIMESTAMPTZ,
         node_id                 TEXT PRIMARY KEY,
-        parent_id               TEXT REFERENCES plans("Node ID"),
+        parent_id               TEXT REFERENCES plans(node_id),
         node_type               TEXT NOT NULL,
         total_runtime           INTERVAL,
         strategy                TEXT,
@@ -145,6 +144,13 @@ statement, which you can use to actually insert values:
         triggers                trigger_plan[]
     );
 
+Insert values like so:
+
+    INSERT INTO plans SELECT * FROM plan(
+        $$ SELECT * FROM pg_class WHERE relname = 'users' $$,
+        true
+    );
+
 Some notes on the columns:
 
 * The `planned_at` column is just `NOW()`. Convenient for when the output is
@@ -184,6 +190,13 @@ Some notes on the columns:
     + `relation`        TEXT
     + `time`            INTERVAL
     + `calls`           FLOAT
+
+  You can turn them into a full table expression by selecting them from the
+  `plans` table described above like so:
+
+      SELECT (a.b).trigger_name, (a.b).relation, (a.b).relation,
+             (a.b).time, (a.b).calls
+        FROM (SELECT unnest(triggers) FROM plans) AS a(b);
 
 All other columns are derived directly from the XML output of `EXPLAIN`.
 Please see ["Using
