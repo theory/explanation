@@ -210,7 +210,7 @@ TBD.
 
 Dependencies
 ------------
-The `extension-table` extension requires PostgreSQL 9.0 or higher.
+The `explain-table` extension requires PostgreSQL 9.0 or higher.
 
 Author
 ------
