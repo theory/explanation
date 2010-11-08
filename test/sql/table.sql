@@ -2,6 +2,7 @@
 \set QUIET 1
 BEGIN;
 \t
+SET IntervalStyle = 'postgres';
 \i sql/explain-table.sql
 
 -- Need to mock md5() so that it emits known values, so the tests will pass.
@@ -40,15 +41,15 @@ CREATE TEMPORARY TABLE plans (
     "Node ID"               TEXT PRIMARY KEY,
     "Parent ID"             TEXT REFERENCES plans("Node ID"),
     "Node Type"             TEXT NOT NULL,
-    "Total Runtime"         FLOAT,
+    "Total Runtime"         INTERVAL,
     "Strategy"              TEXT,
     "Operation"             TEXT,
     "Startup Cost"          FLOAT,
     "Total Cost"            FLOAT,
     "Plan Rows"             FLOAT,
     "Plan Width"            INTEGER,
-    "Actual Startup Time"   FLOAT,
-    "Actual Total Time"     FLOAT,
+    "Actual Startup Time"   INTERVAL,
+    "Actual Total Time"     INTERVAL,
     "Actual Rows"           FLOAT,
     "Actual Loops"          FLOAT,
     "Parent Relationship"   TEXT,
@@ -241,7 +242,7 @@ SELECT * FROM parse_node($$     <Plan>
          </Plan>
        </Plans>
      </Plan>
-$$, NULL, 14.35, 3);
+$$, NULL, '14.35 ms', 3);
 
 SELECT * FROM plans;
 

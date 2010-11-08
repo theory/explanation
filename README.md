@@ -22,7 +22,7 @@ Output:
 
      Node Type  │ Strategy │ Actual Startup Time │ Actual Total Time 
     ────────────┼──────────┼─────────────────────┼───────────────────
-     Index Scan │          │               0.025 │             0.025
+     Index Scan │          │ 00:00:00.000017     │ 00:00:00.000017
     
 
 Installation
@@ -95,15 +95,15 @@ statement, which you can use to actually insert values:
         "Node ID"               TEXT PRIMARY KEY,
         "Parent ID"             TEXT REFERENCES plans("Node ID"),
         "Node Type"             TEXT NOT NULL,
-        "Total Cost"            FLOAT,
+        "Total Runtime"         INTERVAL,
         "Strategy"              TEXT,
         "Operation"             TEXT,
         "Startup Cost"          FLOAT,
         "Total Cost"            FLOAT,
         "Plan Rows"             FLOAT,
         "Plan Width"            INTEGER,
-        "Actual Startup Time"   FLOAT,
-        "Actual Total Time"     FLOAT,
+        "Actual Startup Time"   INTERVAL,
+        "Actual Total Time"     INTERVAL,
         "Actual Rows"           FLOAT,
         "Actual Loops"          FLOAT,
         "Parent Relationship"   TEXT,
@@ -142,7 +142,7 @@ statement, which you can use to actually insert values:
         "Original Hash Batches" BIGINT,
         "Peak Memory Usage"     BIGINT,
         "Schema"                TEXT,
-        "CTE Name"              TEXT,
+        "CTE Name"              TEXT,       
         "Trigger Count"         INTEGER
     );
 

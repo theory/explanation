@@ -2,7 +2,6 @@
 BEGIN;
 \set QUIET 1
 \i sql/explain-table.sql
-\set QUIET 0
 
 -- Need to mock md5() so that it emits known values, so the tests will pass.
 CREATE SCHEMA mock;
@@ -43,10 +42,12 @@ $$;
 
 SET search_path = mock,public,pg_catalog;
 SET DateStyle = 'ISO';
+SET IntervalStyle = 'postgres';
 SET timezone = 'UTC';
 
 -- Okay, now on with the tests. Create a table to query against.
 CREATE TABLE foo(id int);
+\set QUIET 0
 
 -- Plan an explain and an explain analyze.
 SELECT * FROM plan('select * from foo');

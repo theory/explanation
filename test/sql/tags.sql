@@ -3,6 +3,7 @@
 BEGIN;
 \t
 \pset format unaligned
+SET IntervalStyle = 'postgres';
 \i sql/explain-table.sql
 
 SELECT "Node Type"             FROM parse_node('<Plan><Node-Type>Aggregate</Node-Type></Plan>');

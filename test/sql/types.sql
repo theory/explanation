@@ -3,21 +3,22 @@
 BEGIN;
 \pset format unaligned
 \t
+SET IntervalStyle = 'postgres';
 \i sql/explain-table.sql
 
 SELECT pg_typeof("Timestamp")             = 'timestamptz'::regtype, 'Timestamp'         FROM plan('SELECT 1');
 SELECT pg_typeof("Node ID")               = 'text'::regtype,    'Node ID'               FROM parse_node('<Plan><Node-Type>Aggregate</Node-Type></Plan>');
 SELECT pg_typeof("Parent ID")             = 'text'::regtype,    'Parent ID'             FROM parse_node('<Plan><Node-Type>Aggregate</Node-Type></Plan>');
 SELECT pg_typeof("Node Type")             = 'text'::regtype,    'Node Type'             FROM parse_node('<Plan><Node-Type>Aggregate</Node-Type></Plan>');
-SELECT pg_typeof("Total Runtime")         = 'float'::regtype,   'Total Runtime'         FROM parse_node('<Plan><Node-Type>Aggregate</Node-Type></Plan>', NULL, 12.2);
+SELECT pg_typeof("Total Runtime")         = 'interval'::regtype,'Total Runtime'         FROM parse_node('<Plan><Node-Type>Aggregate</Node-Type></Plan>', NULL, '12.2 ms');
 SELECT pg_typeof("Strategy")              = 'text'::regtype,    'Strategy'              FROM parse_node('<Plan><Strategy>Sorted</Strategy></Plan>');
 SELECT pg_typeof("Operation")             = 'text'::regtype,    'Operation'             FROM parse_node('<Plan><Operation>foo</Operation></Plan>');
 SELECT pg_typeof("Startup Cost")          = 'float'::regtype,   'Startup Cost'          FROM parse_node('<Plan><Startup-Cost>258.13</Startup-Cost></Plan>');
 SELECT pg_typeof("Total Cost")            = 'float'::regtype,   'Total Cost'            FROM parse_node('<Plan><Total-Cost>259.13</Total-Cost></Plan>');
 SELECT pg_typeof("Plan Rows")             = 'float'::regtype,   'Plan Rows'             FROM parse_node('<Plan><Plan-Rows>1000</Plan-Rows></Plan>');
 SELECT pg_typeof("Plan Width")            = 'integer'::regtype, 'Plan Width'            FROM parse_node('<Plan><Plan-Width>33</Plan-Width></Plan>');
-SELECT pg_typeof("Actual Startup Time")   = 'float'::regtype,   'Actual Startup Time'   FROM parse_node('<Plan><Actual-Startup-Time>0.121</Actual-Startup-Time></Plan>');
-SELECT pg_typeof("Actual Total Time")     = 'float'::regtype,   'Actual Total Time'     FROM parse_node('<Plan><Actual-Total-Time>0.134</Actual-Total-Time></Plan>');
+SELECT pg_typeof("Actual Startup Time")   = 'interval'::regtype,'Actual Startup Time'   FROM parse_node('<Plan><Actual-Startup-Time>0.121</Actual-Startup-Time></Plan>');
+SELECT pg_typeof("Actual Total Time")     = 'interval'::regtype,'Actual Total Time'     FROM parse_node('<Plan><Actual-Total-Time>0.134</Actual-Total-Time></Plan>');
 SELECT pg_typeof("Actual Rows")           = 'float'::regtype,   'Actual Rows'           FROM parse_node('<Plan><Actual-Rows>2000</Actual-Rows></Plan>');
 SELECT pg_typeof("Actual Loops")          = 'float'::regtype,   'Actual Loops'          FROM parse_node('<Plan><Actual-Loops>20</Actual-Loops></Plan>');
 SELECT pg_typeof("Parent Relationship")   = 'text'::regtype,    'Parent Relationship'   FROM parse_node('<Plan><Parent-Relationship>Outer</Parent-Relationship></Plan>');

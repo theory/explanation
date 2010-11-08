@@ -6,21 +6,21 @@ SET client_min_messages = warning;
 CREATE OR REPLACE FUNCTION parse_node(
     node       XML,
     parent_id  TEXT DEFAULT NULL,
-    runtime    FLOAT DEFAULT NULL,
+    runtime    INTERVAL DEFAULT NULL,
     trig_count INTEGER DEFAULT NULL
 ) RETURNS TABLE(
     "Node ID"               TEXT,
     "Parent ID"             TEXT,
     "Node Type"             TEXT,
-    "Total Runtime"         FLOAT,
+    "Total Runtime"         INTERVAL,
     "Strategy"              TEXT,
     "Operation"             TEXT,
     "Startup Cost"          FLOAT,
     "Total Cost"            FLOAT,
     "Plan Rows"             FLOAT,
     "Plan Width"            INTEGER,
-    "Actual Startup Time"   FLOAT, -- Change to interval?
-    "Actual Total Time"     FLOAT, -- Change to interval?
+    "Actual Startup Time"   INTERVAL,
+    "Actual Total Time"     INTERVAL,
     "Actual Rows"           FLOAT,
     "Actual Loops"          FLOAT,
     "Parent Relationship"   TEXT,
@@ -77,8 +77,8 @@ BEGIN
         (xpath('/Plan/Total-Cost/text()', node))[1]::text::FLOAT,
         (xpath('/Plan/Plan-Rows/text()', node))[1]::text::FLOAT,
         (xpath('/Plan/Plan-Width/text()', node))[1]::text::INTEGER,
-        (xpath('/Plan/Actual-Startup-Time/text()', node))[1]::text::FLOAT,
-        (xpath('/Plan/Actual-Total-Time/text()', node))[1]::text::FLOAT,
+        ((xpath('/Plan/Actual-Startup-Time/text()', node))[1]::text || ' ms')::interval,
+        ((xpath('/Plan/Actual-Total-Time/text()', node))[1]::text || ' ms')::interval,
         (xpath('/Plan/Actual-Rows/text()', node))[1]::text::FLOAT,
         (xpath('/Plan/Actual-Loops/text()', node))[1]::text::FLOAT,
         (xpath('/Plan/Parent-Relationship/text()', node))[1]::text,
@@ -138,15 +138,15 @@ CREATE OR REPLACE FUNCTION plan(
     "Node ID"               TEXT,
     "Parent ID"             TEXT,
     "Node Type"             TEXT,
-    "Total Runtime"         FLOAT,
+    "Total Runtime"         INTERVAL,
     "Strategy"              TEXT,
     "Operation"             TEXT,
     "Startup Cost"          FLOAT,
     "Total Cost"            FLOAT,
     "Plan Rows"             FLOAT,
     "Plan Width"            INTEGER,
-    "Actual Startup Time"   FLOAT,
-    "Actual Total Time"     FLOAT,
+    "Actual Startup Time"   INTERVAL,
+    "Actual Total Time"     INTERVAL,
     "Actual Rows"           FLOAT,
     "Actual Loops"          FLOAT,
     "Parent Relationship"   TEXT,
@@ -201,7 +201,7 @@ BEGIN
     RETURN QUERY SELECT NOW(), * FROM parse_node(
         (xpath('/e:explain/e:Query/e:Plan', plan, xmlns))[1],
         NULL,
-        (xpath('/e:explain/e:Query/e:Total-Runtime/text()', plan, xmlns))[1]::text::float,
+        ((xpath('/e:explain/e:Query/e:Total-Runtime/text()', plan, xmlns))[1]::text || ' ms')::interval,
         (xpath('count(/e:explain/e:Query/e:Triggers/e:Trigger)', plan, xmlns))[1]::text::integer
     );
 END;
