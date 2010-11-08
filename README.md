@@ -143,7 +143,7 @@ statement, which you can use to actually insert values:
         "Peak Memory Usage"     BIGINT,
         "Schema"                TEXT,
         "CTE Name"              TEXT,       
-        "Trigger Count"         INTEGER
+        "Triggers"              TEXT[]
     );
 
 Some notes on the columns:
@@ -176,8 +176,8 @@ Some notes on the columns:
 * The `"Total Runtime"` column applies only to the outer-most plan, and sums
   the runtime of the entire query.
 
-* The `"Trigger Count"` column also applies only to the outer-most plan, and
-  simply provides a count of the number of triggers that were called.
+* The `"Triggers"` column also applies only to the outer-most plan, and simply
+  provides an array of the names of the triggers that were called.
 
 All other columns are derived directly from the XML output of `EXPLAIN`.
 Please see ["Using

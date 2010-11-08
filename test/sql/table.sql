@@ -89,7 +89,7 @@ CREATE TEMPORARY TABLE plans (
     "Peak Memory Usage"     BIGINT,
     "Schema"                TEXT,
     "CTE Name"              TEXT,
-    "Trigger Count"         INTEGER
+    "Triggers"              TEXT[]
 );
 
 INSERT INTO plans
@@ -242,7 +242,7 @@ SELECT * FROM parse_node($$     <Plan>
          </Plan>
        </Plans>
      </Plan>
-$$, NULL, '14.35 ms', 3);
+$$, NULL, '14.35 ms', '{foo,bar}');
 
 SELECT * FROM plans;
 

@@ -7,7 +7,7 @@ CREATE OR REPLACE FUNCTION parse_node(
     node       XML,
     parent_id  TEXT DEFAULT NULL,
     runtime    INTERVAL DEFAULT NULL,
-    trig_count INTEGER DEFAULT NULL
+    trigs      TEXT[] DEFAULT NULL
 ) RETURNS TABLE(
     "Node ID"               TEXT,
     "Parent ID"             TEXT,
@@ -60,7 +60,7 @@ CREATE OR REPLACE FUNCTION parse_node(
     "Peak Memory Usage"     BIGINT,
     "Schema"                TEXT,
     "CTE Name"              TEXT,       
-    "Trigger Count"         INTEGER
+    "Triggers"              TEXT[]
 ) LANGUAGE plpgsql AS $$
 DECLARE
     plans   xml[] := xpath('/Plan/Plans/Plan', node);
@@ -118,7 +118,7 @@ BEGIN
         (xpath('/Plan/Peak-Memory-Usage/text()', node))[1]::text::bigint,
         (xpath('/Plan/Schema/text()', node))[1]::text,
         (xpath('/Plan/CTE-Name/text()', node))[1]::text,
-        trig_count
+        trigs
     ;
 
     -- Recurse.
@@ -186,7 +186,7 @@ CREATE OR REPLACE FUNCTION plan(
     "Peak Memory Usage"     BIGINT,
     "Schema"                TEXT,
     "CTE Name"              TEXT,
-    "Trigger Count"         INTEGER
+    "Triggers"              TEXT[]
 ) LANGUAGE plpgsql AS $$
 DECLARE
     plan  xml;
@@ -202,7 +202,7 @@ BEGIN
         (xpath('/e:explain/e:Query/e:Plan', plan, xmlns))[1],
         NULL,
         ((xpath('/e:explain/e:Query/e:Total-Runtime/text()', plan, xmlns))[1]::text || ' ms')::interval,
-        (xpath('count(/e:explain/e:Query/e:Triggers/e:Trigger)', plan, xmlns))[1]::text::integer
+        xpath('/e:explain/e:Query/e:Triggers/e:Trigger/e:Trigger-Name', plan, xmlns)::text[]
     );
 END;
 $$;
