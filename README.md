@@ -88,8 +88,8 @@ The first row will be the outermost node, and any other rows represent the
 child nodes. The structure of the relation is the same as this `CREATE TABLE`
 statement, which you can use to actually insert values:
 
-    CREATE TEMPORARY TABLE plans (
-        timestamp               TIMESTAMPTZ,
+    CREATE TABLE plans (
+        planned_at              TIMESTAMPTZ,
         node_id                 TEXT PRIMARY KEY,
         parent_id               TEXT REFERENCES plans(node_id),
         node_type               TEXT NOT NULL,
