@@ -134,6 +134,7 @@ CREATE OR REPLACE FUNCTION plan(
     q TEXT,
     a BOOLEAN DEFAULT FALSE
 ) RETURNS TABLE(
+    "Timestamp"             TIMESTAMPTZ,
     "Node ID"               TEXT,
     "Parent ID"             TEXT,
     "Node Type"             TEXT,
@@ -197,7 +198,7 @@ BEGIN
          || CASE WHEN a THEN ', analyze true' ELSE '' END
          || ') ' || q INTO plan;
 
-    RETURN QUERY SELECT * FROM parse_node(
+    RETURN QUERY SELECT NOW(), * FROM parse_node(
         (xpath('/e:explain/e:Query/e:Plan', plan, xmlns))[1],
         NULL,
         (xpath('/e:explain/e:Query/e:Total-Runtime/text()', plan, xmlns))[1]::text::float,

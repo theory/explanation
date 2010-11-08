@@ -1,4 +1,5 @@
 \set ECHO 0
+t|Timestamp
 t|Node ID
 t|Parent ID
 t|Node Type

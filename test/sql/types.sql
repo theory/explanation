@@ -5,6 +5,7 @@ BEGIN;
 \t
 \i sql/explain-table.sql
 
+SELECT pg_typeof("Timestamp")             = 'timestamptz'::regtype, 'Timestamp'         FROM plan('SELECT 1');
 SELECT pg_typeof("Node ID")               = 'text'::regtype,    'Node ID'               FROM parse_node('<Plan><Node-Type>Aggregate</Node-Type></Plan>');
 SELECT pg_typeof("Parent ID")             = 'text'::regtype,    'Parent ID'             FROM parse_node('<Plan><Node-Type>Aggregate</Node-Type></Plan>');
 SELECT pg_typeof("Node Type")             = 'text'::regtype,    'Node Type'             FROM parse_node('<Plan><Node-Type>Aggregate</Node-Type></Plan>');

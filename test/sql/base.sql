@@ -36,7 +36,14 @@ BEGIN
 END;
 $$;
 
+-- Mock now(), too.
+CREATE FUNCTION mock.now() RETURNS TIMESTAMPTZ LANGUAGE SQL AS $$
+    SELECT '2010-11-08 19:21:19.817375+00'::timestamptz;
+$$;
+
 SET search_path = mock,public,pg_catalog;
+SET DateStyle = 'ISO';
+SET timezone = 'UTC';
 
 -- Okay, now on with the tests. Create a table to query against.
 CREATE TABLE foo(id int);

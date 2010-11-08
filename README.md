@@ -91,6 +91,7 @@ child nodes. The structure of the relation is the same as this `CREATE TABLE`
 statement, which you can use to actually insert values:
 
     CREATE TEMPORARY TABLE plans (
+        "Timestamp"             TIMESTAMPTZ,
         "Node ID"               TEXT PRIMARY KEY,
         "Parent ID"             TEXT REFERENCES plans("Node ID"),
         "Node Type"             TEXT NOT NULL,
@@ -146,6 +147,10 @@ statement, which you can use to actually insert values:
     );
 
 Some notes on the columns:
+
+* The `"Timestamp"` column is just `NOW()`. Convenient for when the output is
+  stored in a table and you'd like to refer back to earlier plans when
+  comparing changes to queries over time.
 
 * The `"Node ID"` column contains an MD5 hash created just before a node is
   parsed, from the concatenation of the server PID and the current time:
