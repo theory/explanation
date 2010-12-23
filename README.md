@@ -203,6 +203,28 @@ Please see ["Using
 EXPLAIN"](http://www.postgresql.org/docs/current/static/using-explain.html)
 for further reading on using `EXPLAIN`.
 
+Specifying Columns
+------------------
+
+The column values are created by executing `xpath()` queries against the XML
+`EXPLAIN` format. There's a lot of data, so for big queries with lots of
+nodes, all those calculations can be quite expensive. For ad hoc analyses this
+isn't a big deal, and for slow queries most of the overhead is likely to be
+taken up if you analyze. However, if you need to process a lot of queries with
+this function, and you don't need all of the data, tell it the data you *do*
+want by passing an array listing the columns you're interested in, like so:
+
+    SELECT node_type, strategy, actual_startup_time, actual_total_time
+      FROM plan(
+               $$ SELECT * FROM pg_class WHERE relname = 'users' $$,
+               true,
+               ARRAY['node_type', 'total_runtime', 'strategy', 'total_cost']
+           );
+
+With this execution, only the `node_id` (which is always calculated),
+`node_type`, `total_runtime`, `strategy`, and `total_cost` columns will
+contain values. All others will be `NULL`.
+
 Examples
 --------
 
