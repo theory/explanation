@@ -178,8 +178,7 @@ Some notes on the columns:
       8dc3d35ab978f6c6e46f7927e7b86d21 | dd3d1b1fb6c70be827075e01b306250c | Index Scan
       3d7c72f13ae7571da70f434b5bc9e0af | 029dde3a3c872f0c960f03d2ecfaf5ee | Function Scan
 
-* The `total_runtime` column applies only to the outer-most plan, and sums the
-  runtime of the entire query.
+* The `total_runtime` column sums the runtime of the entire query.
 
 * The `triggers` column also applies only to the outer-most plan, and provides
   an array of `trigger_plan` records for the that were called. The columns of

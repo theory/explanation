@@ -151,7 +151,7 @@ BEGIN
     -- Recurse.
     IF plans IS NOT NULL THEN
         FOR node IN SELECT unnest(plans) LOOP
-            RETURN QUERY SELECT * FROM parse_node(node, node_id);
+            RETURN QUERY SELECT * FROM parse_node(node, node_id, runtime);
         END LOOP;
     END IF;
 END;
@@ -279,7 +279,7 @@ BEGIN
     -- Recurse.
     IF plans IS NOT NULL THEN
         FOR node IN SELECT unnest(plans) LOOP
-            RETURN QUERY SELECT * FROM parse_node(cols, node, node_id);
+            RETURN QUERY SELECT * FROM parse_node(cols, node, node_id, runtime);
         END LOOP;
     END IF;
 END;
