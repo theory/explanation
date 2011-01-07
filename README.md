@@ -241,7 +241,7 @@ Author
 Copyright and License
 ---------------------
 
-Copyright (c) 2010, Marchex.
+Copyright (c) 2010-2011, Marchex.
 
 All rights reserved.
 
