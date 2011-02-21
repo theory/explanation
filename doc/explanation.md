@@ -181,10 +181,53 @@ With this execution, only the `node_id` (which is always calculated),
 `node_type`, `total_runtime`, `strategy`, and `total_cost` columns will
 contain values. All others will be `NULL`.
 
-Examples
---------
+Example
+-------
 
-TBD.
+Say you had a table full of queries extracted from a query log, and you'd like
+to analyze the sequence, index, function, and tid scans executed against a set
+of partitions. You might do something like this to generate that data:
+
+    CREATE TABLE partition_query_stats (
+        statement        TEXT     NOT NULL,
+        runtime          INTERVAL NOT NULL,
+        index_scan_count INT      NOT NULL DEFAULT 0,
+        seq_scan_count   INT      NOT NULL DEFAULT 0,
+        scan_time        INTERVAL NOT NULL DEFAULT '0 secs'
+    );
+
+    CREATE OR REPLACE FUNCTION analyze_partition_queries(
+        partition_regex TEXT
+    ) RETURNS VOID LANGUAGE plpgsql AS $$
+    DECLARE
+        query TEXT;
+    BEGIN
+        FOR query in SELECT query FROM logged_queries LOOP
+            INSERT INTO partition_query_stats (
+                   statement, runtime, index_scan_count, seq_scan_count,
+                  scan_time
+            )
+            SELECT query,
+                   MAX(total_runtime),
+                   COUNT( CASE WHEN node_type ~* '.*Index Scan' THEN 1 ELSE NULL END ),
+                   COUNT( CASE WHEN node_type IN ('Seq Scan', 'Function Scan', 'Tid Scan') THEN 1 ELSE NULL END ),
+                   SUM(actual_total_time )
+             FROM explanation(
+                  query    := query,
+                  analyzed := TRUE, 
+                  columns  := ARRAY['total_runtime', 'node_type', 'actual_total_time', 'relation_name']
+             )
+            WHERE relation_name ~* partition_regex
+              AND (node_type LIKE '% Scan' OR node_type = 'Append')
+            GROUP BY statement;
+        END LOOP;
+    END;
+    $$;
+
+    SELECT analyze_partition_queries('at_call_log_.+');
+    
+The scan data would then be in the `query_partition_stats` table for further
+examination and analysis.
 
 Author
 ------
