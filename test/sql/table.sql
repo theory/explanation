@@ -35,6 +35,8 @@ BEGIN
 END;
 $$;
 
+SET client_min_messages = warning;
+SET log_min_messages = warning;
 SET search_path = mock,public,pg_catalog;
 
 CREATE TEMPORARY TABLE plans (
@@ -91,6 +93,9 @@ CREATE TEMPORARY TABLE plans (
     cte_name              TEXT,       
     triggers              trigger_plan[]
 );
+
+RESET client_min_messages;
+RESET log_min_messages;
 
 INSERT INTO plans
 SELECT * FROM parse_node($$     <Plan>

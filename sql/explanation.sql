@@ -1,8 +1,3 @@
--- Adjust this setting to control where the objects get created.
-SET search_path = public;
-
-SET client_min_messages = warning;
-
 CREATE TYPE trigger_plan AS (
     trigger_name    TEXT,
     constraint_name TEXT,
