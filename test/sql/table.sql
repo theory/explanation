@@ -3,7 +3,7 @@
 BEGIN;
 \t
 SET IntervalStyle = 'postgres';
-\i sql/explain-table.sql
+\i sql/explanation.sql
 
 -- Need to mock md5() so that it emits known values, so the tests will pass.
 CREATE SCHEMA mock;

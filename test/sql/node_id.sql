@@ -1,7 +1,7 @@
 \set ECHO 0
 \set QUIET 1
 BEGIN;
-\i sql/explain-table.sql
+\i sql/explanation.sql
 
 -- Mock clock_timestamp().
 CREATE SCHEMA mock;

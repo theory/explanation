@@ -285,7 +285,7 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION plan(
+CREATE OR REPLACE FUNCTION explanation(
     query        TEXT,
     with_analyze BOOLEAN DEFAULT FALSE,
     columns      TEXT[]  DEFAULT NULL

@@ -1,13 +1,13 @@
 {
-   "name": "explain-table",
+   "name": "explanation",
    "abstract": "Convert an explain plan into a table",
    "description": "Sometimes you want to be able to save an explain plan for later analysis and querying. This extension does that for you.",
    "version": "0.1.0",
    "maintainer": "David E. Wheeler <david@justatheory.com>",
    "license": "bsd",
    "provides": {
-      "explain-table": {
-         "file": "sql/explain-table.sql",
+      "explanation": {
+         "file": "sql/explanation.sql",
          "version": "0.1.0"
       }
    },
@@ -21,11 +21,11 @@
    },
    "resources": {
       "bugtracker": {
-         "web": "http://github.com/theory/explain-table/issues/"
+         "web": "http://github.com/theory/explanation/issues/"
       },
       "repository": {
-        "url":  "git://github.com/theory/explain-table.git",
-        "web":  "http://github.com/theory/explain-table/",
+        "url":  "git://github.com/theory/explanation.git",
+        "web":  "http://github.com/theory/explanation/",
         "type": "git"
       }
    },

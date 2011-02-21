@@ -1,9 +1,9 @@
-explain-table 0.1.0
-===================
+explanation 0.1.0
+=================
 
-This extension adds a new function, `plan()`, to your database. Pass it a
-string that executes a query and the function runs `EXPLAIN` on the query and
-returns the results as a table. Each node in the plan is represented by a
+This extension adds a new function, `explanation()`, to your database. Pass it
+a string that executes a query and the function runs `EXPLAIN` on the query
+and returns the results as a table. Each node in the plan is represented by a
 single row, and child nodes refer to the unique identifier of their parents.
 
 Synopsis
@@ -12,10 +12,10 @@ Synopsis
 Plan a simple query:
 
     SELECT node_type, strategy, actual_startup_time, actual_total_time
-      FROM plan(
-               $$ SELECT * FROM pg_class WHERE relname = 'users' $$,
-               true
-           );
+      FROM explanation(
+           query   := $$ SELECT * FROM pg_class WHERE relname = 'users' $$,
+           analyze := true
+      );
 
 Output:
 
@@ -26,15 +26,19 @@ Output:
 Usage
 -----
 
-To use the `plan()` function, simply pass a string you'd like to have
+To use the `explanation()` function, simply pass a string you'd like to have
 `EXPLAIN`ed:
 
-    SELECT * FROM plan(:query);
+    SELECT * FROM explanation(:query);
 
-If you'd like the output of `EXPLAIN ANALYZE`, pass `true` as the
-second argument.
+If you'd like the output of `EXPLAIN ANALYZE`, pass `true` as the second
+argument:
 
-    SELECT * FROM plan(:query, true);
+    SELECT * FROM explanation(:query, true);
+
+Or via the `:analyze` named parameter:
+
+    SELECT * FROM explanation(query := :query, anayze := true);
 
 The function returns a relation with each node of the plan as a single row.
 The first row will be the outermost node, and any other rows represent the
@@ -99,9 +103,9 @@ statement, which you can use to actually insert values:
 
 Insert values like so:
 
-    INSERT INTO plans SELECT * FROM plan(
-        $$ SELECT * FROM pg_class WHERE relname = 'users' $$,
-        true
+    INSERT INTO plans SELECT * FROM explanation(
+        query   := $$ SELECT * FROM pg_class WHERE relname = 'users' $$,
+        analyze := true
     );
 
 Some notes on the columns:
@@ -167,11 +171,11 @@ this function, and you don't need all of the data, tell it the data you *do*
 want by passing an array listing the columns you're interested in, like so:
 
     SELECT node_type, strategy, actual_startup_time, actual_total_time
-      FROM plan(
-               $$ SELECT * FROM pg_class WHERE relname = 'users' $$,
-               true,
-               ARRAY['node_type', 'total_runtime', 'strategy', 'total_cost']
-           );
+      FROM explanation(
+           query   := $$ SELECT * FROM pg_class WHERE relname = 'users' $$,
+           analyze := true,
+           columns := ARRAY['node_type', 'total_runtime', 'strategy', 'total_cost']
+      );
 
 With this execution, only the `node_id` (which is always calculated),
 `node_type`, `total_runtime`, `strategy`, and `total_cost` columns will

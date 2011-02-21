@@ -4,9 +4,9 @@ BEGIN;
 \pset format unaligned
 \t
 SET IntervalStyle = 'postgres';
-\i sql/explain-table.sql
+\i sql/explanation.sql
 
-SELECT pg_typeof(planned_at)            = 'timestamptz'::regtype, 'planned_at'         frOM plan('SELECT 1');
+SELECT pg_typeof(planned_at)            = 'timestamptz'::regtype, 'planned_at'         frOM explanation('SELECT 1');
 SELECT pg_typeof(node_id)               = 'text'::regtype,    'node_id'               FROM parse_node('<Plan><Node-Type>Aggregate</Node-Type></Plan>');
 SELECT pg_typeof(parent_id)             = 'text'::regtype,    'parent_id'             FROM parse_node('<Plan><Node-Type>Aggregate</Node-Type></Plan>');
 SELECT pg_typeof(node_type)             = 'text'::regtype,    'node_type'             FROM parse_node('<Plan><Node-Type>Aggregate</Node-Type></Plan>');

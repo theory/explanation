@@ -4,7 +4,7 @@ BEGIN;
 \t
 \pset format unaligned
 SET IntervalStyle = 'postgres';
-\i sql/explain-table.sql
+\i sql/explanation.sql
 
 SELECT node_type             FROM parse_node('<Plan><Node-Type>Aggregate</Node-Type></Plan>');
 SELECT strategy              FROM parse_node('<Plan><Strategy>Sorted</Strategy></Plan>');

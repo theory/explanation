@@ -1,9 +1,9 @@
-explain-table 0.1.0
-===================
+explanation 0.1.0
+=================
 
-This extension adds a new function, `plan()`, to your database. Pass it a
-string that executes a query and the function runs `EXPLAIN` on the query and
-returns the results as a table. Each node in the plan is represented by a
+This extension adds a new function, `explanation()`, to your database. Pass it
+a string that executes a query and the function runs `EXPLAIN` on the query
+and returns the results as a table. Each node in the plan is represented by a
 single row, and child nodes refer to the unique identifier of their parents.
 
 Installation
@@ -37,13 +37,6 @@ to find it:
 
     env PG_CONFIG=/path/to/pg_config make && make installcheck && make install
 
-And finally, if all that fails (and if you're on PostgreSQL 8.1 or lower, it
-likely will), copy the entire distribution directory to the `contrib/`
-subdirectory of the PostgreSQL source tree and try it there without
-`pg_config`:
-
-    env NO_PGXS=1 make && make installcheck && make install
-
 If you encounter an error such as:
 
     ERROR:  must be owner of database regression
@@ -55,7 +48,7 @@ You need to run the test suite using a super user, such as the default
 
 Dependencies
 ------------
-The `explain-table` extension requires PostgreSQL 9.0 or higher compiled with
+The `explanation` extension requires PostgreSQL 9.0 or higher compiled with
 XML support (`--with-xml`).
 
 Copyright and License
