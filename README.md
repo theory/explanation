@@ -5,6 +5,7 @@ This extension adds a new function, `explanation()`, to your database. Pass it
 a string that executes a query and the function runs `EXPLAIN` on the query
 and returns the results as a table. Each node in the plan is represented by a
 single row, and child nodes refer to the unique identifier of their parents.
+The results, that is, are organized into a proximity tree.
 
 Installation
 ------------

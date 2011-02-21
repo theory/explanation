@@ -1,6 +1,6 @@
 {
    "name": "explanation",
-   "abstract": "Convert an explain plan into a table",
+   "abstract": "Turn an explain plan into a table of nodes organized as a proximity tree",
    "description": "Sometimes you want to be able to save an explain plan for later analysis and querying. This extension does that for you.",
    "version": "0.1.0",
    "maintainer": "David E. Wheeler <david@justatheory.com>",
