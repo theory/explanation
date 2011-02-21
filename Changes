@@ -1,0 +1,14 @@
+Revision history for PostgreSQL extension explanation.
+
+0.2.0 
+      - Renamed from "exlain-table" to "explanation". Suggested by Andrew
+        Dunstan.
+      - Renamed `plan()` to `explanation()`.
+      - Improved the documentation.
+      - Released on PGXN under the revised BSD open source license.
+
+0.1.0  2011-01-07T23:04:43
+      - Initial version.
+      - Written by PGX for Marchex.
+      - Not otherwise released.
+
