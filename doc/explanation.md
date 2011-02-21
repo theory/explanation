@@ -233,7 +233,8 @@ examination and analysis.
 Author
 ------
 
-[David E. Wheeler](http://justatheory.com/)
+[David E. Wheeler](http://www.justatheory.com/),
+[PostgreSQL Experts, Inc.](http://www.pgexperts.com).
 
 Copyright and License
 ---------------------
