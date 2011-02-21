@@ -1,4 +1,4 @@
-explanation 0.1.0
+explanation 0.2.0
 =================
 
 This extension adds a new function, `explanation()`, to your database. Pass it
