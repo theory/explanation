@@ -1,6 +1,6 @@
 Revision history for PostgreSQL extension explanation.
 
-0.2.0 
+0.2.0 2011-02-21T20:14:15
       - Renamed from "exlain-table" to "explanation". Suggested by Andrew
         Dunstan.
       - Renamed `plan()` to `explanation()`.
