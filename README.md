@@ -6,23 +6,6 @@ string that executes a query and the function runs `EXPLAIN` on the query and
 returns the results as a table. Each node in the plan is represented by a
 single row, and child nodes refer to the unique identifier of their parents.
 
-Synopsis
---------
-
-Plan a simple query:
-
-    SELECT node_type, strategy, actual_startup_time, actual_total_time
-      FROM plan(
-               $$ SELECT * FROM pg_class WHERE relname = 'users' $$,
-               true
-           );
-
-Output:
-
-     node_type  │ strategy │ actual_startup_time │ actual_total_time 
-    ────────────┼──────────┼─────────────────────┼───────────────────
-     Index Scan │          │ 00:00:00.000017     │ 00:00:00.000017
-
 Installation
 ------------
 
@@ -40,8 +23,8 @@ You need to use GNU make, which may well be installed on your system as
 `gmake`:
 
     gmake
-    gmake install
     gmake installcheck
+    gmake install
 
 If you encounter an error such as:
 
@@ -70,173 +53,10 @@ You need to run the test suite using a super user, such as the default
 
     make installcheck PGUSER=postgres
 
-Usage
------
-
-To use the `plan()` function, simply pass a string you'd like to have
-`EXPLAIN`ed:
-
-    SELECT * FROM plan(:query);
-
-If you'd like the output of `EXPLAIN ANALYZE`, pass `true` as the
-second argument.
-
-    SELECT * FROM plan(:query, true);
-
-The function returns a relation with each node of the plan as a single row.
-The first row will be the outermost node, and any other rows represent the
-child nodes. The structure of the relation is the same as this `CREATE TABLE`
-statement, which you can use to actually insert values:
-
-    CREATE TABLE plans (
-        planned_at              TIMESTAMPTZ,
-        node_id                 TEXT PRIMARY KEY,
-        parent_id               TEXT REFERENCES plans(node_id),
-        node_type               TEXT NOT NULL,
-        total_runtime           INTERVAL,
-        strategy                TEXT,
-        operation               TEXT,
-        startup_cost            FLOAT,
-        total_cost              FLOAT,
-        plan_rows               FLOAT,
-        plan_width              INTEGER,
-        actual_startup_time     INTERVAL,
-        actual_total_time       INTERVAL,
-        actual_rows             FLOAT,
-        actual_loops            FLOAT,
-        parent_relationship     TEXT,
-        sort_key                TEXT[],
-        sort_method             TEXT[],
-        sort_space_used         BIGINT,
-        sort_space_type         TEXT,
-        join_type               TEXT,
-        join_filter             TEXT,
-        hash_cond               TEXT,
-        relation_name           TEXT,
-        alias                   TEXT,
-        scan_direction          TEXT,
-        index_name              TEXT,
-        index_cond              TEXT,
-        recheck_cond            TEXT,
-        tid_cond                TEXT,
-        merge_cond              TEXT,
-        subplan_name            TEXT,
-        function_name           TEXT,
-        function_call           TEXT,
-        filter                  TEXT,
-        one_time_filter         TEXT,
-        command                 TEXT,
-        shared_hit_blocks       BIGINT,
-        shared_read_blocks      BIGINT,
-        shared_written_blocks   BIGINT,
-        local_hit_blocks        BIGINT,
-        local_read_blocks       BIGINT,
-        local_written_blocks    BIGINT,
-        temp_read_blocks        BIGINT,
-        temp_written_blocks     BIGINT,
-        output                  TEXT[],
-        hash_buckets            BIGINT,
-        hash_batches            BIGINT,
-        original_hash_batches   BIGINT,
-        peak_memory_usage       BIGINT,
-        schema                  TEXT,
-        cte_name                TEXT,       
-        triggers                trigger_plan[]
-    );
-
-Insert values like so:
-
-    INSERT INTO plans SELECT * FROM plan(
-        $$ SELECT * FROM pg_class WHERE relname = 'users' $$,
-        true
-    );
-
-Some notes on the columns:
-
-* The `planned_at` column is just `NOW()`. Convenient for when the output is
-  stored in a table and you'd like to refer back to earlier plans when
-  comparing changes to queries over time.
-
-* The `node_id` column contains an MD5 hash created just before a node is
-  parsed, from the concatenation of the server PID and the current time:
-
-      md5( pg_backend_pid() || clock_timestamp() )
-
-  As such it should be adequately unique on a single server. The `parent_id`
-  will be `NULL` for the outer plan. For example, here's the output of the
-  first three columns of a query with nine plan nodes:
-
-                  node_id              │            parent_id             │   node_type
-      ─────────────────────────────────┼──────────────────────────────────┼────────────────
-      029dde3a3c872f0c960f03d2ecfaf5ee |                                  | Aggregate
-      3e4c4968cee7653037613c234a953be1 | 029dde3a3c872f0c960f03d2ecfaf5ee | Sort
-      dd3d1b1fb6c70be827075e01b306250c | 3e4c4968cee7653037613c234a953be1 | Nested Loop
-      037a8fe70739ed1be6a3006d0ab80c82 | dd3d1b1fb6c70be827075e01b306250c | Hash Join
-      2c4e922dc19ce9f01a3bf08fbd76b041 | 037a8fe70739ed1be6a3006d0ab80c82 | Seq Scan
-      709b2febd8e560dd8830f4c7277c3758 | 037a8fe70739ed1be6a3006d0ab80c82 | Hash
-      9dd89be09ea07a1000a21cbfc09121c7 | 709b2febd8e560dd8830f4c7277c3758 | Seq Scan
-      8dc3d35ab978f6c6e46f7927e7b86d21 | dd3d1b1fb6c70be827075e01b306250c | Index Scan
-      3d7c72f13ae7571da70f434b5bc9e0af | 029dde3a3c872f0c960f03d2ecfaf5ee | Function Scan
-
-* The `total_runtime` column sums the runtime of the entire query.
-
-* The `triggers` column also applies only to the outer-most plan, and provides
-  an array of `trigger_plan` records for the that were called. The columns of
-  the composite `trigger_plan` type are:
-
-    + `trigger_name`    TEXT
-    + `constraint_name` TEXT
-    + `relation`        TEXT
-    + `time`            INTERVAL
-    + `calls`           FLOAT
-
-  You can turn them into a full table expression by selecting them from the
-  `plans` table described above like so:
-
-      SELECT (a.b).trigger_name, (a.b).relation, (a.b).relation,
-             (a.b).time, (a.b).calls
-        FROM (SELECT unnest(triggers) FROM plans) AS a(b);
-
-All other columns are derived directly from the XML output of `EXPLAIN`.
-Please see ["Using
-EXPLAIN"](http://www.postgresql.org/docs/current/static/using-explain.html)
-for further reading on using `EXPLAIN`.
-
-Specifying Columns
-------------------
-
-The column values are created by executing `xpath()` queries against the XML
-`EXPLAIN` format. There's a lot of data, so for big queries with lots of
-nodes, all those calculations can be quite expensive. For ad hoc analyses this
-isn't a big deal, and for slow queries most of the overhead is likely to be
-taken up if you analyze. However, if you need to process a lot of queries with
-this function, and you don't need all of the data, tell it the data you *do*
-want by passing an array listing the columns you're interested in, like so:
-
-    SELECT node_type, strategy, actual_startup_time, actual_total_time
-      FROM plan(
-               $$ SELECT * FROM pg_class WHERE relname = 'users' $$,
-               true,
-               ARRAY['node_type', 'total_runtime', 'strategy', 'total_cost']
-           );
-
-With this execution, only the `node_id` (which is always calculated),
-`node_type`, `total_runtime`, `strategy`, and `total_cost` columns will
-contain values. All others will be `NULL`.
-
-Examples
---------
-
-TBD.
-
 Dependencies
 ------------
-The `explain-table` extension requires PostgreSQL 9.0 or higher.
-
-Author
-------
-
-[David E. Wheeler](http://justatheory.com/)
+The `explain-table` extension requires PostgreSQL 9.0 or higher compiled with
+XML support (`--with-xml`).
 
 Copyright and License
 ---------------------
