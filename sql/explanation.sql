@@ -286,9 +286,9 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION explanation(
-    query        TEXT,
-    with_analyze BOOLEAN DEFAULT FALSE,
-    columns      TEXT[]  DEFAULT NULL
+    query    TEXT,
+    analyzed BOOLEAN DEFAULT FALSE,
+    columns  TEXT[]  DEFAULT NULL
 ) RETURNS TABLE(
     planned_at            TIMESTAMPTZ,
     node_id               TEXT,
@@ -351,7 +351,7 @@ DECLARE
 BEGIN
     -- Get the plan.
     EXECUTE 'EXPLAIN (format xml'
-         || CASE WHEN with_analyze THEN ', analyze true' ELSE '' END
+         || CASE WHEN analyzed THEN ', analyze true' ELSE '' END
          || ') ' || query INTO plan;
 
     IF columns IS NULL THEN

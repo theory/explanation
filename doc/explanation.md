@@ -13,8 +13,8 @@ Plan a simple query:
 
     SELECT node_type, strategy, actual_startup_time, actual_total_time
       FROM explanation(
-           query   := $$ SELECT * FROM pg_class WHERE relname = 'users' $$,
-           analyze := true
+           query    := $$ SELECT * FROM pg_class WHERE relname = 'users' $$,
+           analyzed := true
       );
 
 Output:
@@ -36,9 +36,9 @@ argument:
 
     SELECT * FROM explanation(:query, true);
 
-Or via the `:analyze` named parameter:
+Or via the `analyzed` parameter:
 
-    SELECT * FROM explanation(query := :query, anayze := true);
+    SELECT * FROM explanation(query := :query, anayzed := true);
 
 The function returns a relation with each node of the plan as a single row.
 The first row will be the outermost node, and any other rows represent the
@@ -104,8 +104,8 @@ statement, which you can use to actually insert values:
 Insert values like so:
 
     INSERT INTO plans SELECT * FROM explanation(
-        query   := $$ SELECT * FROM pg_class WHERE relname = 'users' $$,
-        analyze := true
+        query    := $$ SELECT * FROM pg_class WHERE relname = 'users' $$,
+        analyzed := true
     );
 
 Some notes on the columns:
@@ -172,9 +172,9 @@ want by passing an array listing the columns you're interested in, like so:
 
     SELECT node_type, strategy, actual_startup_time, actual_total_time
       FROM explanation(
-           query   := $$ SELECT * FROM pg_class WHERE relname = 'users' $$,
-           analyze := true,
-           columns := ARRAY['node_type', 'total_runtime', 'strategy', 'total_cost']
+           query    := $$ SELECT * FROM pg_class WHERE relname = 'users' $$,
+           analyzed := true,
+           columns  := ARRAY['node_type', 'total_runtime', 'strategy', 'total_cost']
       );
 
 With this execution, only the `node_id` (which is always calculated),
