@@ -7,6 +7,7 @@
    "license": "bsd",
    "provides": {
       "explanation": {
+         "abstract": "Turn an explain plan into a table of nodes organized as a proximity tree",
          "file": "sql/explanation.sql",
          "version": "0.3.0"
       }
@@ -21,11 +22,11 @@
    },
    "resources": {
       "bugtracker": {
-         "web": "http://github.com/theory/explanation/issues/"
+         "web": "http://github.com/pgexperts/explanation/issues/"
       },
       "repository": {
-        "url":  "git://github.com/theory/explanation.git",
-        "web":  "http://github.com/theory/explanation/",
+        "url":  "git://github.com/pgexperts/explanation.git",
+        "web":  "http://github.com/pgexperts/explanation/",
         "type": "git"
       }
    },
