@@ -118,7 +118,7 @@ Some notes on the columns:
 * The `node_id` column contains an MD5 hash created just before a node is
   parsed, from the concatenation of the server PID and the current time:
 
-      md5( pg_backend_pid() || clock_timestamp() )
+        md5( pg_backend_pid() || clock_timestamp() )
 
   As such it should be adequately unique on a single server. The `parent_id`
   will be `NULL` for the outer plan. For example, here's the output of the
@@ -151,9 +151,9 @@ Some notes on the columns:
   You can turn them into a full table expression by selecting them from the
   `plans` table described above like so:
 
-      SELECT (a.b).trigger_name, (a.b).relation, (a.b).relation,
-             (a.b).time, (a.b).calls
-        FROM (SELECT unnest(triggers) FROM plans) AS a(b);
+        SELECT (a.b).trigger_name, (a.b).relation, (a.b).relation,
+               (a.b).time, (a.b).calls
+          FROM (SELECT unnest(triggers) FROM plans) AS a(b);
 
 All other columns are derived directly from the XML output of `EXPLAIN`.
 Please see ["Using
