@@ -138,6 +138,41 @@ Some notes on the columns:
 
 * The `total_runtime` column sums the runtime of the entire query.
 
+* The `node_type` column may have one of the following values (read from
+  [`backend/commands/explain.c`](https://github.com/postgres/postgres/blob/master/src/backend/commands/explain.c)):
+
+    + Aggregate
+    + Append
+    + Bitmap Heap Scan
+    + Bitmap Index Scan
+    + BitmapAnd
+    + BitmapOr
+    + CTE Scan
+    + Foreign Scan
+    + Function Scan
+    + Group
+    + Hash
+    + Hash Join
+    + Index Scan
+    + Limit
+    + LockRows
+    + Materialize
+    + Merge Append
+    + Merge Join
+    + ModifyTable
+    + Nested Loop
+    + Recursive Union
+    + Result
+    + Seq Scan
+    + SetOp
+    + Sort
+    + Subquery Scan
+    + Tid Scan
+    + Unique
+    + Values Scan
+    + WindowAgg
+    + WorkTable Scan
+
 * The `triggers` column also applies only to the outer-most plan, and provides
   an array of `trigger_plan` records for the that were called. The columns of
   the composite `trigger_plan` type are:
