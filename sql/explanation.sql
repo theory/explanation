@@ -345,7 +345,7 @@ DECLARE
     xmlns text[] := ARRAY[ARRAY['e', 'http://www.postgresql.org/2009/explain']];
 BEGIN
     -- Get the plan.
-    EXECUTE 'EXPLAIN (format xml'
+    EXECUTE 'EXPLAIN (format xml, verbose'
          || CASE WHEN analyzed THEN ', analyze true' ELSE '' END
          || ') ' || query INTO plan;
 

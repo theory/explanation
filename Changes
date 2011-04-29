@@ -5,6 +5,9 @@ Revision history for PostgreSQL extension explanation.
       - Added abstract to the `provides` section of `META.json`.
       - Fixed the Markdown formattin of `psql` output in the documentation so
         that the results properly appear in a `<pre>` block.
+      - Added the `VERBOSE` parameter to the internal call to `EXPLAIN`. This
+        populates a few more columns that were otherwise always `NULL`,
+        especially the `schema` and `output` columns.
 
 0.2.0 2011-02-21T20:14:15
       - Renamed from "exlain-table" to "explanation". Suggested by Andrew

@@ -139,7 +139,8 @@ Some notes on the columns:
 * The `total_runtime` column sums the runtime of the entire query.
 
 * The `node_type` column may have one of the following values (read from
-  [`src/backend/commands/explain.c`](https://github.com/postgres/postgres/blob/master/src/backend/commands/explain.c)):
+  [`src/backend/commands/explain.c`](https://github.com/postgres/postgres/blob/master/src/backend/commands/explain.c)),
+  although other values may be added by plugins and the like:
 
     + Aggregate
     + Append
