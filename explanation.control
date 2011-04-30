@@ -1,0 +1,5 @@
+# explanation extension
+comment = 'Explain a query and display the nodes as a relation organized as a proximity tree'
+default_version = '0.3.0'
+module_pathname = '$libdir/explanation'
+relocatable = true

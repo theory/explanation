@@ -11,6 +11,9 @@ Revision history for PostgreSQL extension explanation.
       - Enabled the BUFFERS parameter to the internal call to `EXPLAIN
         ANALYZE`. This populates a few more columns that were otherwise always
         `NULL`, namely those ending in `_blocks`.
+      - Added PostgreSQL 9.1 `CREATE EXTENSION` support, including migration
+        from an unpackaged install via `CREATE EXTENSION semver FROM
+        unpackaged`.
 
 0.2.0 2011-02-21T20:14:15
       - Renamed from "exlain-table" to "explanation". Suggested by Andrew
