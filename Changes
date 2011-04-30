@@ -1,5 +1,7 @@
 Revision history for PostgreSQL extension explanation.
 
+0.4.0
+
 0.3.0   2011-04-30T00:12:09
       - Fixed GitHub links in `META.json`.
       - Added abstract to the `provides` section of `META.json`.

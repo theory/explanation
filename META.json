@@ -2,7 +2,7 @@
    "name": "explanation",
    "abstract": "Explain a query and display the nodes as a relation organized as a proximity tree",
    "description": "It's not easy to marshall EXPLAIN plans into query-able shape. This extension does that for you. Give it a query and it returns a a table of query nodes suitable for further analysis and querying",
-   "version": "0.3.0",
+   "version": "0.4.0",
    "maintainer": "David E. Wheeler <david.wheeler@pgexperts.com>",
    "license": "bsd",
    "provides": {
