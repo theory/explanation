@@ -20,9 +20,9 @@ Plan a simple query:
 
 Output:
 
-     node_type  │ strategy │ actual_startup_time │ actual_total_time 
-    ────────────┼──────────┼─────────────────────┼───────────────────
-     Index Scan │          │ 00:00:00.000017     │ 00:00:00.000017
+     node_type  | strategy | actual_startup_time | actual_total_time 
+    ------------+----------+---------------------+-------------------
+     Index Scan |          | 00:00:00.000017     | 00:00:00.000017
 
 Usage
 -----
@@ -124,8 +124,8 @@ Some notes on the columns:
   will be `NULL` for the outer plan. For example, here's the output of the
   first three columns of a query with nine plan nodes:
 
-                    node_id              │            parent_id             │   node_type
-        ─────────────────────────────────┼──────────────────────────────────┼────────────────
+                    node_id              |            parent_id             |   node_type
+        ---------------------------------+----------------------------------+----------------
         029dde3a3c872f0c960f03d2ecfaf5ee |                                  | Aggregate
         3e4c4968cee7653037613c234a953be1 | 029dde3a3c872f0c960f03d2ecfaf5ee | Sort
         dd3d1b1fb6c70be827075e01b306250c | 3e4c4968cee7653037613c234a953be1 | Nested Loop
@@ -270,7 +270,7 @@ Author
 ------
 
 [David E. Wheeler](http://www.justatheory.com/),
-[PostgreSQL Experts, Inc.](http://www.pgexperts.com).
+[PostgreSQL Experts, Inc.](http://www.pgexperts.com)
 
 Copyright and License
 ---------------------
