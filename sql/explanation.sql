@@ -27,7 +27,7 @@ $$;
 
 CREATE OR REPLACE FUNCTION parse_node(
     node       XML,
-    parent_id  TEXT           DEFAULT NULL,
+    parent     TEXT           DEFAULT NULL,
     runtime    INTERVAL       DEFAULT NULL,
     trigs      trigger_plan[] DEFAULT NULL
 ) RETURNS TABLE(
@@ -90,7 +90,7 @@ DECLARE
 BEGIN
     RETURN QUERY SELECT
         node_id,
-        parent_id,
+        parent,
         (xpath('/Plan/Node-Type/text()', node))[1]::text,
         runtime,
         (xpath('/Plan/Strategy/text()', node))[1]::text,
@@ -155,7 +155,7 @@ $$;
 CREATE OR REPLACE FUNCTION parse_node(
     cols       TEXT[],
     node       XML,
-    parent_id  TEXT DEFAULT NULL,
+    parent     TEXT DEFAULT NULL,
     runtime    INTERVAL DEFAULT NULL,
     trigs      trigger_plan[] DEFAULT NULL
 ) RETURNS TABLE(
@@ -209,7 +209,7 @@ CREATE OR REPLACE FUNCTION parse_node(
     original_hash_batches BIGINT,
     peak_memory_usage     BIGINT,
     schema                TEXT,
-    cte_name              TEXT,       
+    cte_name              TEXT,
     triggers              trigger_plan[]
 ) LANGUAGE plpgsql AS $$
 DECLARE
@@ -218,7 +218,7 @@ DECLARE
 BEGIN
     RETURN QUERY SELECT
         node_id,
-        parent_id,
+        parent,
         CASE WHEN 'node_type'             = ANY(cols) THEN (xpath('/Plan/Node-Type/text()', node))[1]::text                                ELSE NULL END,
         runtime,
         CASE WHEN 'strategy'              = ANY(cols) THEN (xpath('/Plan/Strategy/text()', node))[1]::text                                 ELSE NULL END,
