@@ -1,2 +1,9 @@
 results/
+*.so
+tmp/
+*.o
+regression.diffs
+regression.out
+/sql/explanation--*
+!/sql/explanation--*--*.sql
 /explanation-*
