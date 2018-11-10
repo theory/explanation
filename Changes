@@ -7,6 +7,7 @@ Revision history for PostgreSQL extension explanation.
       - Fixed the Makefile to confirm to pgsql-hackers recommendations.
       - Changed the Makefile to read the distribution name and version from
         META.json.
+      - Fixed test failure on Postgres 11.
 
 0.3.0   2011-04-30T00:12:09
       - Fixed GitHub links in `META.json`.

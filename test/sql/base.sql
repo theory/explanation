@@ -1,4 +1,4 @@
-\set ECHO 0
+\set ECHO none
 BEGIN;
 \set QUIET 1
 \i sql/explanation.sql

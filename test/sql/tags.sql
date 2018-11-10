@@ -1,4 +1,4 @@
-\set ECHO 0
+\set ECHO none
 \set QUIET 1
 BEGIN;
 \t

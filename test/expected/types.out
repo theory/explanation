@@ -1,4 +1,4 @@
-\set ECHO 0
+\set ECHO none
 t|planned_at
 t|node_id
 t|parent_id
