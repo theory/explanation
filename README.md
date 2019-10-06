@@ -7,7 +7,7 @@ and returns the results as a table. Each node in the plan is represented by a
 single row, and child nodes refer to the unique identifier of their parents.
 The results, that is, are organized into a proximity tree.
 
-[![Build Status](https://travis-ci.org/theory/pgtap.png)](https://travis-ci.org/theory/explanation)
+[![Build Status](https://travis-ci.org/theory/explanation.png)](https://travis-ci.org/theory/explanation)
 
 Installation
 ------------
