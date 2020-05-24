@@ -14,6 +14,7 @@ PG91         = $(shell $(PG_CONFIG) --version | grep -qE " 8\.| 9\.0" && echo no
 ifeq ($(PG91),yes)
 DATA = $(wildcard sql/*--*.sql) sql/$(EXTENSION)--$(EXTVERSION).sql
 EXTRA_CLEAN = sql/$(EXTENSION)--$(EXTVERSION).sql
+REGRESS_OPTS = --inputdir=test
 endif
 
 PGXS := $(shell $(PG_CONFIG) --pgxs)

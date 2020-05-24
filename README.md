@@ -7,7 +7,8 @@ and returns the results as a table. Each node in the plan is represented by a
 single row, and child nodes refer to the unique identifier of their parents.
 The results, that is, are organized into a proximity tree.
 
-[![Build Status](https://travis-ci.org/theory/explanation.png)](https://travis-ci.org/theory/explanation)
+[![PGXN version](https://badge.fury.io/pg/explanation.svg)](https://badge.fury.io/pg/explanation)
+[![Build Status](https://github.com/theory/explanation/workflows/CI/badge.svg)](https://github.com/theory/explanation/actions)
 
 Installation
 ------------
