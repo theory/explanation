@@ -11,7 +11,7 @@ jobs:
     steps:
       - run: su postgres -c "$(which initdb) --locale en_US.UTF-8 -E UNICODE && $(which pg_ctl) start -l /tmp/server.log"
       - uses: actions/checkout@v2
-      - run: apt-get -qq update && apt-get -qq install build-essential postgresql-server-dev-${{ matrix.pg }}
+      - run: apt-get -qq update && apt-get -qq install build-essential postgresql-server-dev-$PG_MAJOR
       - run: make
       - run: make install
       # - run: pg_isready
